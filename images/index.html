@@ -490,7 +490,7 @@
             resize: vertical;
         }
 
-        /* TABS UBICACIÓN */
+        /* TABS UBICACIÓN (solo dos opciones) */
         .location-tabs {
             display: flex;
             gap: 0.5rem;
@@ -532,22 +532,36 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .location-help {
+        /* Panel GPS */
+        .gps-info {
+            background: #e8f5e9;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--color-success);
+            display: none;
+        }
+        .gps-info.active { display: block; }
+        .btn-gps {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        /* Panel Maps */
+        .maps-help {
             background: #e3f2fd;
             padding: 1rem;
             border-radius: 12px;
             margin-bottom: 1rem;
-            font-size: 0.9rem;
             border-left: 4px solid #1976d2;
         }
-
-        .location-help ol {
-            margin: 0.5rem 0 0 1.2rem;
-            padding: 0;
-        }
-
-        .location-help li { margin-bottom: 0.25rem; }
-
         .btn-maps {
             display: flex;
             align-items: center;
@@ -560,37 +574,24 @@
             text-decoration: none;
             border-radius: 12px;
             font-weight: 600;
-            margin-top: 0.5rem;
+            margin: 1rem 0;
             transition: var(--transition);
         }
-
         .btn-maps:hover {
             background: #3367D6;
             transform: translateY(-1px);
         }
 
-        .location-preview-box {
-            background: #f0f7f0;
-            border-left: 4px solid var(--color-success);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 0.75rem;
-            font-size: 0.9rem;
-            display: none;
-        }
-
-        .location-preview-box.active { display: block; }
-
         .copy-location-btn {
             background: var(--color-primary);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             cursor: pointer;
-            margin-top: 0.5rem;
             width: 100%;
+            margin-top: 0.5rem;
         }
 
         /* RESUMEN ORDEN */
@@ -904,7 +905,7 @@
     <!-- HERO -->
     <section class="hero">
         <div class="slider-container" id="hero-slider">
-            <div class="loading-grid" id="slider-loading" style="position: absolute; inset: 0; display: grid; place-items: center;">
+            <div id="slider-loading" style="position: absolute; inset: 0; display: grid; place-items: center; background: rgba(44,24,16,0.8);">
                 <div style="color: white; text-align: center;">
                     <div class="status-icon loading" style="border-color: rgba(255,255,255,0.3); border-top-color: white; margin: 0 auto 1rem;"></div>
                     <p>Cargando imágenes...</p>
@@ -1012,47 +1013,42 @@
                     </select>
                 </div>
 
-                <!-- UBICACIÓN -->
+                <!-- UBICACIÓN (solo para delivery) -->
                 <div id="location-section" class="conditional-section">
                     <div class="form-group">
                         <label class="form-label">Indicar ubicación para delivery *</label>
                         
                         <div class="location-tabs">
-                            <button class="location-tab active" onclick="switchTab('autocomplete')">Buscar dirección</button>
-                            <button class="location-tab" onclick="switchTab('maps')">Google Maps</button>
-                            <button class="location-tab" onclick="switchTab('manual')">Escribir dirección</button>
+                            <button class="location-tab active" onclick="switchTab('gps', this)">Buscar dirección (GPS)</button>
+                            <button class="location-tab" onclick="switchTab('maps', this)">Google Maps</button>
                         </div>
 
-                        <!-- Autocomplete -->
-                        <div id="panel-autocomplete" class="location-panel active">
-                            <input type="text" class="form-input" id="autocomplete-input" placeholder="Escribí tu calle y número...">
-                            <div class="location-preview-box" id="location-preview">
-                                <strong>Ubicación detectada:</strong>
-                                <div id="location-text"></div>
-                                <div id="location-coords" style="font-family: monospace; font-size: 0.85rem; color: #666; margin-top: 0.5rem;"></div>
-                                <button class="copy-location-btn" onclick="copyLocation()">Copiar ubicación para el delivery</button>
+                        <!-- Panel GPS -->
+                        <div id="panel-gps" class="location-panel active">
+                            <button class="btn-gps" onclick="getGPSLocation()">📍 Obtener mi ubicación actual</button>
+                            <div class="gps-info" id="gps-info">
+                                <strong>Dirección aproximada:</strong>
+                                <p id="gps-address"></p>
+                                <p id="gps-coords" style="font-size:0.85rem; color:#666;"></p>
+                                <button class="copy-location-btn" onclick="copyGPSLocation()">Copiar dirección</button>
                             </div>
                         </div>
 
-                        <!-- Maps -->
+                        <!-- Panel Maps -->
                         <div id="panel-maps" class="location-panel">
-                            <div class="location-help">
-                                <strong>Para compartir tu ubicación exacta:</strong>
-                                <ol>
+                            <div class="maps-help">
+                                <strong>Compartí tu ubicación exacta:</strong>
+                                <ol style="margin:0.5rem 0 0 1.2rem;">
                                     <li>Tocá el botón de abajo para abrir Google Maps</li>
-                                    <li>Mantené presionado tu ubicación en el mapa</li>
-                                    <li>Tocá "Compartir" y seleccioná "Copiar enlace"</li>
-                                    <li>Volvé acá, seleccioná "Escribir dirección" y pegalo</li>
+                                    <li>Mantené presionado el punto exacto en el mapa</li>
+                                    <li>Seleccioná "Compartir" y copiá el enlace</li>
+                                    <li>Pegalo en el campo de abajo</li>
                                 </ol>
                             </div>
                             <a href="https://maps.google.com" target="_blank" class="btn-maps">
                                 Abrir Google Maps
                             </a>
-                        </div>
-
-                        <!-- Manual -->
-                        <div id="panel-manual" class="location-panel">
-                            <textarea class="form-textarea" id="manual-address" placeholder="Escribí tu dirección completa. Podés incluir:&#10;- Nombre de calle y número&#10;- Barrio&#10;- Ciudad&#10;- Referencias (color de casa, portón, etc.)&#10;- O pegar el enlace de Google Maps"></textarea>
+                            <textarea class="form-textarea" id="maps-link" placeholder="Pegá aquí el enlace de Google Maps o la dirección completa"></textarea>
                         </div>
                     </div>
                 </div>
@@ -1124,86 +1120,49 @@
     </div>
 
     <script>
-       // ==========================================
-// CONFIGURACIÓN - ACTUALIZA ESTOS VALORES
-// ==========================================
-const CONFIG = {
-    GITHUB: {
-        USER: 'TU_USUARIO',                // Tu usuario de GitHub (ej. 'juanperez')
-        REPO: 'yogurt-alma-assets',         // Nombre del repositorio que creaste
-        BRANCH: 'main',                      // Rama principal (puede ser 'master')
-        PATHS: {
-            productsCon: 'images/con-lactosa',
-            productsSin: 'images/sin-lactosa',
-            slider: 'images/slider',
-            prices: 'prices.txt'
-        }
-    },
-    WHATSAPP: '595994883355',               // Tu número de WhatsApp (con código de país)
-    ALIAS: '0994883355',                     // Alias para transferencias
-    STORE_LAT: -25.2914380,                  // Coordenadas de tu tienda (ajústalas)
-    STORE_LNG: -57.6451651,
-    DELIVERY: {
-        zone1: { maxKm: 3, price: 5000, label: 'Cercana' },
-        zone2: { maxKm: 8, price: 8000, label: 'Media' },
-        zone3: { maxKm: 15, price: 12000, label: 'Lejana' }
-    }
-};
+        // ==========================================
+        // CONFIGURACIÓN (completada con tus datos)
+        // ==========================================
+        const CONFIG = {
+            GITHUB: {
+                USER: 'eveliorosabal-cyber',
+                REPO: 'yogurt-alma-assets',
+                BRANCH: 'main',
+                PATHS: {
+                    slider: 'images/slider',
+                    productsCon: 'images/con-lactosa/images/con-lactosa',
+                    productsSin: 'images/con-lactosa/images/sin-lactosa',
+                    logos: 'images/logos',
+                    prices: 'images/prices.txt'
+                }
+            },
+            WHATSAPP: '595994883355',
+            ALIAS: '0994883355',
+            STORE_LAT: -25.2914380,
+            STORE_LNG: -57.6451651,
+            DELIVERY: {
+                zone1: { maxKm: 3, price: 5000, label: 'Cercana' },
+                zone2: { maxKm: 8, price: 8000, label: 'Media' },
+                zone3: { maxKm: 15, price: 12000, label: 'Lejana' }
+            },
+            GOOGLE_SHEETS_URL: 'https://script.google.com/macros/s/AKfycbyDIOjlGOFuVosYPlvRVnY9xEPoYxwi7D8koCl6LSBg9URFkhOUxNO1ZXcmDDG82jr1/exec'
+        };
 
         // ==========================================
-        // SISTEMA DE PRECIOS DINÁMICO (DESDE TXT)
+        // GESTOR DE PRECIOS (desde GitHub)
         // ==========================================
         const PRICE_MANAGER = {
-        // ==========================================
-        // FUNCIONES PARA GITHUB
-        // ==========================================
-
-// Listar archivos de una carpeta en GitHub
-async function listGitHubFiles(folderPath) {
-    const url = `https://api.github.com/repos/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/contents/${folderPath}?ref=${CONFIG.GITHUB.BRANCH}`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Error al listar ${folderPath}: ${response.status}`);
-        const files = await response.json();
-        // Filtrar solo imágenes (puedes ajustar las extensiones)
-        return files.filter(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i));
-    } catch (e) {
-        console.error(e);
-        return [];
-    }
-}
-
-// Cargar precios desde GitHub
-async function loadPrices() {
-    const url = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/${CONFIG.GITHUB.PATHS.prices}`;
-    try {
-        const response = await fetch(url);
-        if (response.ok) {
-            const text = await response.text();
-            PRICE_MANAGER.parse(text);
-        } else {
-            console.warn('No se pudo cargar prices.txt, usando precios por defecto');
-            PRICE_MANAGER.current = {...PRICE_MANAGER.defaults};
-        }
-    } catch (e) {
-        console.warn('Error al cargar precios:', e);
-        PRICE_MANAGER.current = {...PRICE_MANAGER.defaults};
-    }
-}
-            // Precios por defecto (se sobreescriben con prices.txt)
             defaults: {
                 'PROD 1 LACT': 15000, 'PROD 2 LACT': 16000, 'PROD 3 LACT': 16000,
                 'PROD 4 LACT': 16000, 'PROD 5 LACT': 15500, 'PROD 6 LACT': 17000, 'PROD 7 LACT': 18000,
                 'PROD 8 SIN': 18000, 'PROD 9 SIN': 19000, 'PROD 10 SIN': 19000,
                 'PROD 11 SIN': 19000, 'PROD 12 SIN': 18500, 'PROD 13 SIN': 20000, 'PROD 14 SIN': 21000
             },
-            
             current: {},
-            
             async load() {
+                const url = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/${CONFIG.GITHUB.PATHS.prices}`;
                 try {
-                    // Intentar cargar prices.txt desde el servidor
-                    const response = await fetch('prices.txt?t=' + Date.now());
+                    const response = await fetch(url + '?t=' + Date.now());
                     if (response.ok) {
                         const text = await response.text();
                         this.parse(text);
@@ -1211,220 +1170,224 @@ async function loadPrices() {
                         this.current = {...this.defaults};
                     }
                 } catch (e) {
-                    console.log('Usando precios por defecto');
+                    console.warn('Error cargando precios, usando defaults', e);
                     this.current = {...this.defaults};
                 }
                 return this.current;
             },
-            
             parse(text) {
-                // Formato: PROD 4 LACT = 13.000,00
                 const lines = text.split('\n');
                 lines.forEach(line => {
                     const match = line.match(/(PROD\s+\d+\s+(?:LACT|SIN))\s*[=:]\s*([\d.,]+)/i);
                     if (match) {
                         const key = match[1].toUpperCase().replace(/\s+/g, ' ');
                         const price = parseInt(match[2].replace(/\./g, '').replace(/,/g, '').replace(/\s/g, ''));
-                        if (!isNaN(price)) {
-                            this.current[key] = price;
-                        }
+                        if (!isNaN(price)) this.current[key] = price;
                     }
                 });
-                
                 // Completar con defaults los faltantes
                 Object.keys(this.defaults).forEach(key => {
                     if (!this.current[key]) this.current[key] = this.defaults[key];
                 });
             },
-            
             get(productKey) {
                 return this.current[productKey] || this.defaults[productKey] || 0;
             },
-            
-            // Generar template para descargar
             generateTemplate() {
                 let content = '# Precios Yogurt Alma\n';
-                content += '# Formato: PROD X LACT/SIN = precio\n';
-                content += '# Ejemplo: PROD 4 LACT = 13.000,00\n\n';
-                
+                content += '# Formato: PROD X LACT/SIN = precio\n\n';
                 Object.keys(this.defaults).forEach(key => {
                     const price = this.current[key] || this.defaults[key];
                     content += `${key} = ${price.toLocaleString('es-PY')}\n`;
                 });
-                
                 return content;
             }
         };
 
         // ==========================================
-        // CATÁLOGO DINÁMICO (SE ACTUALIZA CON IMÁGENES)
+        // FUNCIONES DE AYUDA PARA GITHUB
         // ==========================================
-        let CATALOG = {
-            con: [], // Se llena automáticamente desde Dropbox
-            sin: []  // Se llena automáticamente desde Dropbox
-        };
-
-        let cart = {};
-        let currentPayment = 'cash';
-        let deliveryCost = 0;
-        let currentLocationTab = 'autocomplete';
-        let userLocation = null;
-
-        // ==========================================
-        // INICIALIZACIÓN
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', async () => {
-            await initSystem();
-            setupAdminAccess();
-        });
-
-        async function initSystem() {
-            // 1. Cargar precios
-            await PRICE_MANAGER.load();
-            
-            // 2. Cargar imágenes desde Dropbox
-            await loadDropboxContent();
-            
-            // 3. Inicializar componentes
-            initSlider();
-            renderProducts();
-            initScrollAnimations();
-            initAutocomplete();
-            
-            // Ocultar loaders
-            document.getElementById('slider-loading').style.display = 'none';
-            document.getElementById('loading-con').style.display = 'none';
-            document.getElementById('loading-sin').style.display = 'none';
-            document.getElementById('grid-con').classList.remove('hidden');
-            document.getElementById('grid-sin').classList.remove('hidden');
-        }
-
-       // ==========================================
-// CARGA DESDE GITHUB
-// ==========================================
-
-// Cargar imágenes del slider
-async function loadSliderImages() {
-    const files = await listGitHubFiles(CONFIG.GITHUB.PATHS.slider);
-    window.sliderImages = files.map(file => file.download_url);
-    if (window.sliderImages.length === 0) {
-        window.sliderImages = ['https://via.placeholder.com/1920x1080/2C1810/FAF7F2?text=Yogurt+Alma'];
-    }
-    initSlider();
-}
-
-// Cargar productos
-async function loadProducts() {
-    const conFiles = await listGitHubFiles(CONFIG.GITHUB.PATHS.productsCon);
-    const sinFiles = await listGitHubFiles(CONFIG.GITHUB.PATHS.productsSin);
-
-    // Mapeo de nombres y descripciones (puedes ajustar según tu catálogo)
-    function getProductName(key) {
-        const map = {
-            'PROD 1 LACT': 'Natural Clásico',
-            'PROD 2 LACT': 'Fresa Selecta',
-            'PROD 3 LACT': 'Mora Silvestre',
-            'PROD 4 LACT': 'Durazno de Estación',
-            'PROD 5 LACT': 'Vainilla Bourbon',
-            'PROD 6 LACT': 'Coco Natural',
-            'PROD 7 LACT': 'Mix de Frutos',
-            'PROD 8 SIN': 'Natural Sin Lactosa',
-            'PROD 9 SIN': 'Fresa Sin Lactosa',
-            'PROD 10 SIN': 'Mora Sin Lactosa',
-            'PROD 11 SIN': 'Durazno Sin Lactosa',
-            'PROD 12 SIN': 'Vainilla Sin Lactosa',
-            'PROD 13 SIN': 'Coco Sin Lactosa',
-            'PROD 14 SIN': 'Mix Sin Lactosa'
-        };
-        return map[key] || key;
-    }
-
-    function getProductDescription(key) {
-        const map = {
-            'PROD 1 LACT': 'El auténtico sabor tradicional, cremoso y equilibrado',
-            'PROD 2 LACT': 'Con frutillas frescas maceradas en su propio jugo',
-            'PROD 3 LACT': 'Arándanos y moras en equilibrio perfecto',
-            'PROD 4 LACT': 'Duraznos maduros en almíbar artesanal',
-            'PROD 5 LACT': 'Vainilla Madagascar de origen ético',
-            'PROD 6 LACT': 'Con leche de coco y coco rallado tostado',
-            'PROD 7 LACT': 'Combinación especial de frutos rojos y tropicales',
-            'PROD 8 SIN': 'Digestivo y ligero, manteniendo toda la cremosidad',
-            'PROD 9 SIN': 'La misma frescura, ahora sin lactosa',
-            'PROD 10 SIN': 'Antioxidantes naturales en formato digestivo',
-            'PROD 11 SIN': 'Dulzura natural sin compromisos',
-            'PROD 12 SIN': 'Suavidad y sabor en perfecta armonía',
-            'PROD 13 SIN': 'Doble coco para máxima cremosidad vegetal',
-            'PROD 14 SIN': 'La experiencia completa, libre de lactosa'
-        };
-        return map[key] || 'Delicioso yogurt artesanal';
-    }
-
-    // Productos con lactosa
-    CATALOG.con = conFiles.map(file => {
-        const key = file.name.replace('.jpg', '').toUpperCase().trim();
-        const idMatch = key.match(/\d+/);
-        const id = idMatch ? 'CL' + idMatch[0].padStart(2, '0') : 'CL00';
-        return {
-            id: id,
-            file: file.name,
-            name: getProductName(key),
-            desc: getProductDescription(key),
-            weight: '500g',
-            price: PRICE_MANAGER.get(key),
-            image: file.download_url,
-            category: 'con',
-            badge: null
-        };
-    });
-
-    // Productos sin lactosa
-    CATALOG.sin = sinFiles.map(file => {
-        const key = file.name.replace('.jpg', '').toUpperCase().trim();
-        const idMatch = key.match(/\d+/);
-        const id = idMatch ? 'SL' + idMatch[0].padStart(2, '0') : 'SL00';
-        return {
-            id: id,
-            file: file.name,
-            name: getProductName(key),
-            desc: getProductDescription(key),
-            weight: '500g',
-            price: PRICE_MANAGER.get(key),
-            image: file.download_url,
-            category: 'sin',
-            badge: 'Sin Lactosa'
-        };
-    });
-
-    // Inicializar carrito
-    cart = {};
-    [...CATALOG.con, ...CATALOG.sin].forEach(p => cart[p.id] = 0);
-
-    renderProducts();
-}
+        async function listGitHubFiles(folderPath) {
+            const url = `https://api.github.com/repos/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/contents/${folderPath}?ref=${CONFIG.GITHUB.BRANCH}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Error al listar ${folderPath}: ${response.status}`);
+                const files = await response.json();
+                return files.filter(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i));
+            } catch (e) {
+                console.error(e);
+                return [];
+            }
         }
 
         // ==========================================
         // SLIDER HERO
         // ==========================================
-        async function initSystem() {
-    await loadPrices();           // 1. Cargar precios
-    await loadSliderImages();     // 2. Cargar imágenes del slider
-    await loadProducts();         // 3. Cargar productos
+        let sliderInterval;
+        async function initSlider() {
+            const container = document.getElementById('hero-slider');
+            const loading = document.getElementById('slider-loading');
+            const dotsContainer = document.getElementById('slider-dots');
+            
+            const images = await listGitHubFiles(CONFIG.GITHUB.PATHS.slider);
+            if (images.length === 0) {
+                // Imagen por defecto si no hay
+                container.innerHTML = `<div class="slide active" style="background-image: url('https://via.placeholder.com/1920x1080/2C1810/FAF7F2?text=Yogurt+Alma');"></div>`;
+                loading.style.display = 'none';
+                return;
+            }
 
-    initScrollAnimations();
-    initAutocomplete();           // Si usas Google Maps
+            container.innerHTML = '';
+            images.forEach((img, index) => {
+                const slide = document.createElement('div');
+                slide.className = `slide ${index === 0 ? 'active' : ''}`;
+                slide.style.backgroundImage = `url('${img.download_url}')`;
+                container.appendChild(slide);
+            });
 
-    // Ocultar loaders
-    document.getElementById('slider-loading').style.display = 'none';
-    document.getElementById('loading-con').style.display = 'none';
-    document.getElementById('loading-sin').style.display = 'none';
-    document.getElementById('grid-con').classList.remove('hidden');
-    document.getElementById('grid-sin').classList.remove('hidden');
-}
+            // Crear dots
+            dotsContainer.innerHTML = '';
+            images.forEach((_, i) => {
+                const dot = document.createElement('span');
+                dot.className = `dot ${i === 0 ? 'active' : ''}`;
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            });
+
+            loading.style.display = 'none';
+            startSliderAuto();
+        }
+
+        let currentSlide = 0;
+        function startSliderAuto() {
+            if (sliderInterval) clearInterval(sliderInterval);
+            sliderInterval = setInterval(() => {
+                const slides = document.querySelectorAll('.slide');
+                const dots = document.querySelectorAll('.dot');
+                if (slides.length === 0) return;
+                slides[currentSlide].classList.remove('active');
+                dots[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }, 5000);
+        }
+
+        function goToSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            if (slides.length === 0) return;
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            clearInterval(sliderInterval);
+            startSliderAuto();
+        }
 
         // ==========================================
-        // RENDERIZAR PRODUCTOS
+        // CARGAR LOGOS
         // ==========================================
+        async function loadLogos() {
+            const logoCon = document.getElementById('logo-con');
+            const logoSin = document.getElementById('logo-sin');
+            const base = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/${CONFIG.GITHUB.PATHS.logos}/`;
+            logoCon.src = base + 'Logo lac.png';
+            logoSin.src = base + 'logo-sin-lactosa.png';
+        }
+
+        // ==========================================
+        // CATÁLOGO DE PRODUCTOS
+        // ==========================================
+        let CATALOG = { con: [], sin: [] };
+        let cart = {};
+
+        async function loadProducts() {
+            const conFiles = await listGitHubFiles(CONFIG.GITHUB.PATHS.productsCon);
+            const sinFiles = await listGitHubFiles(CONFIG.GITHUB.PATHS.productsSin);
+
+            function getProductName(key) {
+                const map = {
+                    'PROD 1 LACT': 'Natural Clásico',
+                    'PROD 2 LACT': 'Fresa Selecta',
+                    'PROD 3 LACT': 'Mora Silvestre',
+                    'PROD 4 LACT': 'Durazno de Estación',
+                    'PROD 5 LACT': 'Vainilla Bourbon',
+                    'PROD 6 LACT': 'Coco Natural',
+                    'PROD 7 LACT': 'Mix de Frutos',
+                    'PROD 8 SIN': 'Natural Sin Lactosa',
+                    'PROD 9 SIN': 'Fresa Sin Lactosa',
+                    'PROD 10 SIN': 'Mora Sin Lactosa',
+                    'PROD 11 SIN': 'Durazno Sin Lactosa',
+                    'PROD 12 SIN': 'Vainilla Sin Lactosa',
+                    'PROD 13 SIN': 'Coco Sin Lactosa',
+                    'PROD 14 SIN': 'Mix Sin Lactosa'
+                };
+                return map[key] || key;
+            }
+
+            function getProductDescription(key) {
+                const map = {
+                    'PROD 1 LACT': 'El auténtico sabor tradicional, cremoso y equilibrado',
+                    'PROD 2 LACT': 'Con frutillas frescas maceradas en su propio jugo',
+                    'PROD 3 LACT': 'Arándanos y moras en equilibrio perfecto',
+                    'PROD 4 LACT': 'Duraznos maduros en almíbar artesanal',
+                    'PROD 5 LACT': 'Vainilla Madagascar de origen ético',
+                    'PROD 6 LACT': 'Con leche de coco y coco rallado tostado',
+                    'PROD 7 LACT': 'Combinación especial de frutos rojos y tropicales',
+                    'PROD 8 SIN': 'Digestivo y ligero, manteniendo toda la cremosidad',
+                    'PROD 9 SIN': 'La misma frescura, ahora sin lactosa',
+                    'PROD 10 SIN': 'Antioxidantes naturales en formato digestivo',
+                    'PROD 11 SIN': 'Dulzura natural sin compromisos',
+                    'PROD 12 SIN': 'Suavidad y sabor en perfecta armonía',
+                    'PROD 13 SIN': 'Doble coco para máxima cremosidad vegetal',
+                    'PROD 14 SIN': 'La experiencia completa, libre de lactosa'
+                };
+                return map[key] || 'Delicioso yogurt artesanal';
+            }
+
+            CATALOG.con = conFiles.map(file => {
+                const key = file.name.replace(/\.[^/.]+$/, '').toUpperCase().trim(); // quita extensión
+                const idMatch = key.match(/\d+/);
+                const id = idMatch ? 'CL' + idMatch[0].padStart(2, '0') : 'CL00';
+                return {
+                    id: id,
+                    file: file.name,
+                    name: getProductName(key),
+                    desc: getProductDescription(key),
+                    weight: '500g',
+                    price: PRICE_MANAGER.get(key),
+                    image: file.download_url,
+                    category: 'con',
+                    badge: null
+                };
+            });
+
+            CATALOG.sin = sinFiles.map(file => {
+                const key = file.name.replace(/\.[^/.]+$/, '').toUpperCase().trim();
+                const idMatch = key.match(/\d+/);
+                const id = idMatch ? 'SL' + idMatch[0].padStart(2, '0') : 'SL00';
+                return {
+                    id: id,
+                    file: file.name,
+                    name: getProductName(key),
+                    desc: getProductDescription(key),
+                    weight: '500g',
+                    price: PRICE_MANAGER.get(key),
+                    image: file.download_url,
+                    category: 'sin',
+                    badge: 'Sin Lactosa'
+                };
+            });
+
+            // Inicializar carrito
+            cart = {};
+            [...CATALOG.con, ...CATALOG.sin].forEach(p => cart[p.id] = 0);
+
+            renderProducts();
+        }
+
         function renderProducts() {
             const gridCon = document.getElementById('grid-con');
             const gridSin = document.getElementById('grid-sin');
@@ -1468,7 +1431,7 @@ async function loadProducts() {
         }
 
         // ==========================================
-        // GESTIÓN CARRITO
+        // CARRITO
         // ==========================================
         function updateQuantity(productId, delta) {
             const newQty = cart[productId] + delta;
@@ -1488,7 +1451,6 @@ async function loadProducts() {
             document.getElementById('cart-total').textContent = total.toLocaleString('es-PY');
             document.getElementById('cart-float').classList.toggle('active', items.length > 0);
             
-            // Actualizar resumen modal
             document.getElementById('summary-subtotal').textContent = subtotal.toLocaleString('es-PY');
             document.getElementById('summary-total').textContent = total.toLocaleString('es-PY');
             document.getElementById('transfer-amount').textContent = 'Gs. ' + total.toLocaleString('es-PY');
@@ -1509,6 +1471,11 @@ async function loadProducts() {
         // ==========================================
         // CHECKOUT
         // ==========================================
+        let deliveryCost = 0;
+        let currentPayment = 'cash';
+        let currentLocationTab = 'gps';
+        let userLocation = null; // {lat, lng, address}
+
         function openCheckout() {
             const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
             if (items.length === 0) {
@@ -1533,14 +1500,13 @@ async function loadProducts() {
             
             if (type === 'delivery') {
                 locationSection.classList.add('active');
-                // Geolocalización para calcular costo
-                if (navigator.geolocation) {
+                // Si ya hay ubicación GPS, recalcular
+                if (userLocation && userLocation.lat) {
+                    calculateDeliveryCost(userLocation.lat, userLocation.lng);
+                } else if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         pos => calculateDeliveryCost(pos.coords.latitude, pos.coords.longitude),
-                        () => {
-                            deliveryCost = 8000;
-                            updateDeliveryDisplay();
-                        }
+                        () => { deliveryCost = 8000; updateDeliveryDisplay(); }
                     );
                 }
             } else {
@@ -1557,7 +1523,7 @@ async function loadProducts() {
             else if (dist <= CONFIG.DELIVERY.zone2.maxKm) rate = CONFIG.DELIVERY.zone2;
             
             deliveryCost = rate.price;
-            userLocation = { lat, lng, distance: dist };
+            userLocation = { ...userLocation, lat, lng, distance: dist };
             updateDeliveryDisplay();
             
             document.getElementById('summary-delivery').innerHTML = 
@@ -1581,59 +1547,63 @@ async function loadProducts() {
         }
 
         // ==========================================
-        // UBICACIÓN Y TABS
+        // TABS DE UBICACIÓN (GPS y Maps)
         // ==========================================
-        function switchTab(tab) {
+        function switchTab(tab, el) {
             currentLocationTab = tab;
             document.querySelectorAll('.location-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
             document.querySelectorAll('.location-panel').forEach(p => p.classList.remove('active'));
-            event.target.classList.add('active');
             document.getElementById(`panel-${tab}`).classList.add('active');
         }
 
-        function initAutocomplete() {
-            if (!window.google) return;
-            const input = document.getElementById('autocomplete-input');
-            const autocomplete = new google.maps.places.Autocomplete(input, {
-                componentRestrictions: { country: 'py' },
-                fields: ['address_components', 'geometry', 'formatted_address']
-            });
-            
-            autocomplete.addListener('place_changed', () => {
-                const place = autocomplete.getPlace();
-                if (place.geometry) {
-                    const lat = place.geometry.location.lat();
-                    const lng = place.geometry.location.lng();
-                    userLocation = {
-                        lat,
-                        lng,
-                        address: place.formatted_address
-                    };
-                    
-                    document.getElementById('location-text').textContent = place.formatted_address;
-                    document.getElementById('location-coords').textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                    document.getElementById('location-preview').classList.add('active');
-                    
-                    // Recalcular costo
+        // GPS
+        function getGPSLocation() {
+            if (!navigator.geolocation) {
+                alert('Tu navegador no soporta geolocalización');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                // Reverse geocoding con Google Maps (si está disponible)
+                if (window.google && google.maps) {
+                    const geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+                        if (status === 'OK' && results[0]) {
+                            userLocation = {
+                                lat, lng,
+                                address: results[0].formatted_address
+                            };
+                            document.getElementById('gps-address').textContent = results[0].formatted_address;
+                            document.getElementById('gps-coords').textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                            document.getElementById('gps-info').classList.add('active');
+                            calculateDeliveryCost(lat, lng);
+                        } else {
+                            // Si falla, mostramos solo coordenadas
+                            userLocation = { lat, lng, address: `${lat}, ${lng}` };
+                            document.getElementById('gps-address').textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                            document.getElementById('gps-coords').textContent = '';
+                            document.getElementById('gps-info').classList.add('active');
+                            calculateDeliveryCost(lat, lng);
+                        }
+                    });
+                } else {
+                    userLocation = { lat, lng, address: `${lat}, ${lng}` };
+                    document.getElementById('gps-address').textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    document.getElementById('gps-info').classList.add('active');
                     calculateDeliveryCost(lat, lng);
                 }
+            }, () => {
+                alert('No se pudo obtener la ubicación');
             });
         }
 
-        function copyLocation() {
+        function copyGPSLocation() {
             if (!userLocation) return;
             const text = `${userLocation.address}\nCoordenadas: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}`;
             navigator.clipboard.writeText(text).then(() => {
-                alert('Ubicación copiada. Podés compartirla con el delivery.');
-            });
-        }
-
-        function copyAlias() {
-            navigator.clipboard.writeText(CONFIG.ALIAS).then(() => {
-                const box = document.querySelector('.alias-box');
-                const original = box.textContent;
-                box.textContent = '¡COPIADO!';
-                setTimeout(() => box.textContent = original, 1500);
+                alert('Dirección copiada');
             });
         }
 
@@ -1669,11 +1639,19 @@ async function loadProducts() {
             }
         }
 
+        function copyAlias() {
+            navigator.clipboard.writeText(CONFIG.ALIAS).then(() => {
+                const box = document.querySelector('.alias-box');
+                const original = box.textContent;
+                box.textContent = '¡COPIADO!';
+                setTimeout(() => box.textContent = original, 1500);
+            });
+        }
+
         // ==========================================
-        // CONFIRMACIÓN - MENSAJE BLOQUEADO
+        // CONFIRMAR PEDIDO
         // ==========================================
         async function confirmOrder() {
-            // Validaciones
             const name = document.getElementById('client-name').value.trim();
             const phone = document.getElementById('client-phone').value.trim();
             const deliveryType = document.getElementById('delivery-type').value;
@@ -1683,12 +1661,16 @@ async function loadProducts() {
             
             let address = '';
             if (deliveryType === 'delivery') {
-                if (currentLocationTab === 'autocomplete') {
-                    address = document.getElementById('autocomplete-input').value;
-                } else if (currentLocationTab === 'manual') {
-                    address = document.getElementById('manual-address').value;
+                if (currentLocationTab === 'gps') {
+                    if (!userLocation || !userLocation.address) {
+                        alert('Primero obtené tu ubicación con GPS');
+                        return;
+                    }
+                    address = userLocation.address;
+                } else if (currentLocationTab === 'maps') {
+                    address = document.getElementById('maps-link').value.trim();
+                    if (!address) { alert('Pegá el enlace de Google Maps o la dirección'); return; }
                 }
-                if (!address) { alert('Indicá tu dirección para el delivery'); return; }
             } else {
                 address = 'Retiro en local - Yogurt Alma';
             }
@@ -1699,20 +1681,14 @@ async function loadProducts() {
                 if (amount < total) { alert('El monto es insuficiente'); return; }
             }
             
-            // Mostrar loading
             document.getElementById('loading-screen').classList.add('active');
             
-            // Construir pedido
             const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
             const order = {
                 id: 'YA-' + Date.now().toString().slice(-6),
                 timestamp: new Date().toISOString(),
                 customer: { name, phone },
-                items: items.map(p => ({
-                    name: p.name,
-                    qty: cart[p.id],
-                    price: p.price
-                })),
+                items: items.map(p => ({ name: p.name, qty: cart[p.id], price: p.price })),
                 totals: {
                     subtotal: items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0),
                     delivery: deliveryCost,
@@ -1721,21 +1697,17 @@ async function loadProducts() {
                 delivery: {
                     type: deliveryType,
                     address: address,
-                    coords: userLocation ? `${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}` : 'No disponible'
+                    coords: userLocation ? `${userLocation.lat},${userLocation.lng}` : ''
                 },
-                payment: {
-                    method: currentPayment,
-                    alias: currentPayment === 'transfer' ? CONFIG.ALIAS : null
-                }
+                payment: { method: currentPayment, alias: currentPayment === 'transfer' ? CONFIG.ALIAS : null }
             };
             
-            // Generar mensaje de WhatsApp (NO EDITABLE - generado automáticamente)
             const message = generateSecureMessage(order);
             const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(message)}`;
             
-            // Guardar en Google Sheets (opcional)
+            // Enviar a Google Sheets
             try {
-                await fetch('TU_GOOGLE_SHEETS_URL', {
+                await fetch(CONFIG.GOOGLE_SHEETS_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -1755,13 +1727,7 @@ async function loadProducts() {
             }, 1500);
         }
 
-        // ==========================================
-        // GENERADOR DE MENSAJE SEGURO (NO EDITABLE)
-        // ==========================================
         function generateSecureMessage(order) {
-            // Este mensaje se genera automáticamente y no puede ser modificado por el usuario
-            // Se codifica directamente en el enlace de WhatsApp
-            
             const lines = [
                 '🥛 *YOGURT ALMA - PEDIDO OFICIAL*',
                 '',
@@ -1792,7 +1758,7 @@ async function loadProducts() {
             lines.push('*ENTREGA:*');
             lines.push(`Tipo: ${order.delivery.type === 'pickup' ? 'Retiro en local' : 'Delivery'}`);
             lines.push(`Dirección: ${order.delivery.address}`);
-            if (order.delivery.coords !== 'No disponible') {
+            if (order.delivery.coords) {
                 lines.push(`Maps: https://maps.google.com/?q=${order.delivery.coords}`);
             }
             lines.push('');
@@ -1834,11 +1800,9 @@ async function loadProducts() {
                     if (entry.isIntersecting) entry.target.classList.add('visible');
                 });
             }, { threshold: 0.1 });
-            
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
         }
 
-        // Acceso admin (tecla secreta: Ctrl+Shift+A)
         function setupAdminAccess() {
             document.addEventListener('keydown', (e) => {
                 if (e.ctrlKey && e.shiftKey && e.key === 'A') {
@@ -1857,10 +1821,28 @@ async function loadProducts() {
             a.click();
             URL.revokeObjectURL(url);
         }
+
+        // ==========================================
+        // INICIALIZACIÓN
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            await PRICE_MANAGER.load();
+            await loadLogos();
+            await initSlider();
+            await loadProducts();
+            
+            initScrollAnimations();
+            setupAdminAccess();
+            
+            document.getElementById('slider-loading').style.display = 'none';
+            document.getElementById('loading-con').style.display = 'none';
+            document.getElementById('loading-sin').style.display = 'none';
+            document.getElementById('grid-con').classList.remove('hidden');
+            document.getElementById('grid-sin').classList.remove('hidden');
+        });
     </script>
-    
-    <!-- Google Maps API (AIzaSyAbVibirARCeKKYtTGI13eY5JAy8M9iByM) -->
+
+    <!-- Google Maps API (con tu clave) -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbVibirARCeKKYtTGI13eY5JAy8M9iByM&libraries=places&language=es" async defer></script>
 </body>
-
 </html>
