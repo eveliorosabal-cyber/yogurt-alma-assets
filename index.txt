@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yogurt Alma | Artesanal desde el Corazón</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* (mismo CSS, no cambia) */
+        :root {
+            --color-primary: #2C1810;
+            --color-secondary: #8B6F47;
+            --color-accent: #D4A574;
+            --color-cream: #FAF7F2;
+            --color-milk: #F5F0E8;
+            --color-success: #5A7D5A;
+            --color-error: #B85C5C;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+            --shadow-soft: 0 4px 20px rgba(44, 24, 16, 0.08);
+            --shadow-elevated: 0 8px 30px rgba(44, 24, 16, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-cream);
+            color: var(--color-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 2rem;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+            background: var(--color-primary);
+        }
+
+        .slider-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active { opacity: 1; }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(44,24,16,0.3), rgba(44,24,16,0.7));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-cream);
+        }
+
+        .hero-badge {
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            background: var(--color-cream);
+            color: var(--color-primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(44, 24, 16, 0.2);
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.75rem;
+            z-index: 20;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dot.active {
+            background: var(--color-cream);
+            transform: scale(1.3);
+        }
+
+        .section {
+            padding: 6rem 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-alt { background: white; }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-logo {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.5rem;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--color-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-subtitle {
+            color: var(--color-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            background: var(--color-milk);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .product-card:hover .product-image { transform: scale(1.05); }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--color-success);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .product-info { padding: 1.5rem; }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-weight {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-secondary);
+            font-weight: 600;
+        }
+
+        .product-stock {
+            font-size: 0.75rem;
+            color: var(--color-success);
+            font-weight: 500;
+        }
+
+        .product-name {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+            min-height: 2.7em;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-milk);
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-milk);
+            padding: 0.25rem;
+            border-radius: 25px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 300;
+        }
+
+        .qty-btn:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .qty-value {
+            font-weight: 600;
+            min-width: 28px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .cart-float {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            left: 2rem;
+            background: white;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(44, 24, 16, 0.2);
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .cart-float.active { display: flex; }
+
+        .cart-info h3 {
+            font-size: 0.85rem;
+            color: var(--color-secondary);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .cart-total {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .btn-cart {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .btn-cart:hover {
+            background: var(--color-secondary);
+            transform: scale(1.02);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(44, 24, 16, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px 24px 0 0;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-milk);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .btn-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--color-milk);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .btn-close:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            padding-bottom: 3rem;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--color-milk);
+            border-radius: 12px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .location-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            background: var(--color-milk);
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .location-tab {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-secondary);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .location-tab.active {
+            background: white;
+            color: var(--color-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .location-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .location-panel.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gps-info {
+            background: #e8f5e9;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--color-success);
+            display: none;
+        }
+        .gps-info.active { display: block; }
+        .btn-gps {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .maps-help {
+            background: #e3f2fd;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #1976d2;
+        }
+        .btn-maps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 1rem;
+            background: #4285F4;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            margin: 1rem 0;
+            transition: var(--transition);
+        }
+        .btn-maps:hover {
+            background: #3367D6;
+            transform: translateY(-1px);
+        }
+
+        .copy-location-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .order-summary {
+            background: var(--color-milk);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.95rem;
+            color: #555;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .summary-item:last-child { border-bottom: none; }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--color-primary);
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-option {
+            border: 2px solid var(--color-milk);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .payment-option:hover { border-color: var(--color-accent); }
+
+        .payment-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(44, 24, 16, 0.02);
+        }
+
+        .payment-option.selected::after {
+            content: '';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 20px;
+            height: 20px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .payment-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--color-primary);
+        }
+
+        .payment-sublabel {
+            font-size: 0.8rem;
+            color: var(--color-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .conditional-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .conditional-section.active { display: block; }
+
+        .transfer-info {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px dashed var(--color-accent);
+        }
+
+        .alias-box {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 1rem 0;
+            letter-spacing: 0.05em;
+            border: 2px solid var(--color-primary);
+            display: inline-block;
+            user-select: all;
+        }
+
+        .vuelto-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .vuelto-box.ok {
+            background: #e8f5e9;
+            color: #2e7d32;
+            display: block;
+        }
+
+        .vuelto-box.error {
+            background: #ffebee;
+            color: #c62828;
+            display: block;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .btn-confirm:hover:not(:disabled) {
+            background: var(--color-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--color-cream);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .status-screen.active { display: flex; }
+
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-icon.loading {
+            border: 4px solid var(--color-milk);
+            border-top-color: var(--color-primary);
+            animation: spin 1s linear infinite;
+        }
+
+        .status-icon.success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .status-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--color-primary);
+        }
+
+        .status-text {
+            color: var(--color-secondary);
+            max-width: 400px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .whatsapp-btn:hover { transform: scale(1.05); }
+
+        .admin-panel {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: none;
+        }
+
+        .admin-panel.visible { display: block; }
+
+        .btn-admin {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+
+        .btn-admin:hover { opacity: 1; }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            .hero { min-height: 500px; }
+            .section { padding: 4rem 1rem; }
+            .products-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .cart-float { left: 1rem; right: 1rem; bottom: 1rem; }
+            .payment-grid { grid-template-columns: 1fr; }
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .loading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 20px;
+            height: 350px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-error);
+            font-size: 1.1rem;
+        }
+
+        .spacer {
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANEL ADMIN -->
+    <div class="admin-panel" id="admin-panel">
+        <button class="btn-admin" onclick="downloadPricesTemplate()">Descargar Template Precios</button>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="slider-container" id="hero-slider">
+            <div id="slider-loading" style="position: absolute; inset: 0; display: grid; place-items: center; background: rgba(44,24,16,0.8);">
+                <div style="color: white; text-align: center;">
+                    <div class="status-icon loading" style="border-color: rgba(255,255,255,0.3); border-top-color: white; margin: 0 auto 1rem;"></div>
+                    <p>Cargando imágenes...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-badge">Hecho con Alma desde 2020</div>
+            <h1 class="hero-title">El Auténtico Yogurt Griego Artesanal</h1>
+            <p class="hero-subtitle">Preparado tradicionalmente en pequeños lotes, con leche seleccionada y cultivo probiótico vivo. Directo de nuestra cocina a tu mesa.</p>
+            <button class="btn-primary" onclick="scrollToProducts()">
+                Ver Productos Disponibles Hoy
+            </button>
+        </div>
+        
+        <div class="slider-dots" id="slider-dots"></div>
+    </section>
+
+    <!-- PRODUCTOS CON LACTOSA -->
+    <section class="section" id="products-con">
+        <div class="section-header fade-up">
+            <img src="" alt="Yogurt con Lactosa" class="section-logo" id="logo-con">
+            <h2 class="section-title">Yogurt Griego Tradicional</h2>
+            <p class="section-subtitle">Receta clásica con toda la cremosidad y el sabor auténtico del yogurt griego tradicional</p>
+        </div>
+        <div class="loading-grid" id="loading-con">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        </div>
+        <div class="products-grid hidden" id="grid-con"></div>
+    </section>
+
+    <!-- PRODUCTOS SIN LACTOSA -->
+    <section class="section section-alt" id="products-sin">
+        <div class="section-header fade-up">
+            <img src="" alt="Yogurt Sin Lactosa" class="section-logo" id="logo-sin">
+            <h2 class="section-title">Yogurt Griego Sin Lactosa</h2>
+            <p class="section-subtitle">La misma cremosidad, sin compromisos. Perfecto para quienes buscan una opción digestiva sin perder el sabor</p>
+        </div>
+        <div class="loading-grid" id="loading-sin">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        </div>
+        <div class="products-grid hidden" id="grid-sin"></div>
+        <div class="spacer"></div>
+    </section>
+
+    <!-- CARRITO -->
+    <div class="cart-float" id="cart-float">
+        <div class="cart-info">
+            <h3>Tu Pedido</h3>
+            <div class="cart-total">Gs. <span id="cart-total">0</span></div>
+        </div>
+        <button class="btn-cart" onclick="openCheckout()">
+            Ver Pedido
+        </button>
+    </div>
+
+    <!-- MODAL CHECKOUT -->
+    <div class="modal-overlay" id="modal-checkout" onclick="closeCheckout(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Finalizar Pedido</h2>
+                <button class="btn-close" onclick="closeCheckout()">×</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- RESUMEN -->
+                <div class="order-summary">
+                    <h3 class="summary-title">Resumen de tu orden</h3>
+                    <div id="summary-items"></div>
+                    <div class="summary-item" style="margin-top: 0.5rem;">
+                        <span>Subtotal</span>
+                        <span>Gs. <span id="summary-subtotal">0</span></span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Delivery</span>
+                        <span id="summary-delivery">Gs. 0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>Gs. <span id="summary-total">0</span></span>
+                    </div>
+                </div>
+
+                <!-- DATOS -->
+                <div class="form-group">
+                    <label class="form-label">Nombre completo *</label>
+                    <input type="text" class="form-input" id="client-name" placeholder="Ej: María Fernández">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">WhatsApp *</label>
+                    <input type="tel" class="form-input" id="client-phone" placeholder="Ej: 0981 123 456">
+                </div>
+
+                <!-- ENTREGA -->
+                <div class="form-group">
+                    <label class="form-label">Tipo de entrega</label>
+                    <select class="form-select" id="delivery-type" onchange="handleDeliveryChange()">
+                        <option value="pickup">Retiro en local (Gratis)</option>
+                        <option value="delivery">Delivery a domicilio</option>
+                    </select>
+                </div>
+
+                <!-- UBICACIÓN -->
+                <div id="location-section" class="conditional-section">
+                    <div class="form-group">
+                        <label class="form-label">Indicar ubicación para delivery *</label>
+                        
+                        <div class="location-tabs">
+                            <button class="location-tab active" onclick="switchTab('gps', this)">Buscar dirección (GPS)</button>
+                            <button class="location-tab" onclick="switchTab('maps', this)">Google Maps</button>
+                        </div>
+
+                        <!-- Panel GPS -->
+                        <div id="panel-gps" class="location-panel active">
+                            <button class="btn-gps" onclick="getGPSLocation()">📍 Obtener mi ubicación actual</button>
+                            <div class="gps-info" id="gps-info">
+                                <strong>Dirección aproximada:</strong>
+                                <p id="gps-address"></p>
+                                <p id="gps-coords" style="font-size:0.85rem; color:#666;"></p>
+                                <button class="copy-location-btn" onclick="copyGPSLocation()">Copiar dirección</button>
+                            </div>
+                        </div>
+
+                        <!-- Panel Maps -->
+                        <div id="panel-maps" class="location-panel">
+                            <div class="maps-help">
+                                <strong>Compartí tu ubicación exacta:</strong>
+                                <ol style="margin:0.5rem 0 0 1.2rem;">
+                                    <li>Tocá el botón de abajo para abrir Google Maps</li>
+                                    <li>Mantené presionado el punto exacto en el mapa</li>
+                                    <li>Seleccioná "Compartir" y copiá el enlace</li>
+                                    <li>Pegalo en el campo de abajo</li>
+                                </ol>
+                            </div>
+                            <a href="https://maps.google.com" target="_blank" class="btn-maps">
+                                Abrir Google Maps
+                            </a>
+                            <textarea class="form-textarea" id="maps-link" placeholder="Pegá aquí el enlace de Google Maps o la dirección completa"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGO -->
+                <div class="form-group">
+                    <label class="form-label">Método de pago</label>
+                    <div class="payment-grid">
+                        <div class="payment-option selected" onclick="selectPayment('cash')" id="pay-cash">
+                            <div class="payment-label">Efectivo</div>
+                            <div class="payment-sublabel">Pago al recibir</div>
+                        </div>
+                        <div class="payment-option" onclick="selectPayment('transfer')" id="pay-transfer">
+                            <div class="payment-label">Transferencia</div>
+                            <div class="payment-sublabel">Alias: 0994883355</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transferencia -->
+                <div id="transfer-section" class="conditional-section">
+                    <div class="transfer-info">
+                        <p style="margin-bottom: 0.5rem; font-weight: 600;">Realizá la transferencia al siguiente alias:</p>
+                        <div class="alias-box" onclick="copyAlias()">0994883355</div>
+                        <p style="font-size: 0.875rem; color: #666; margin-bottom: 1rem;">
+                            Tocá el alias para copiarlo
+                        </p>
+                        <div style="background: white; padding: 1rem; border-radius: 8px; text-align: left; font-size: 0.9rem;">
+                            <strong>Banco:</strong> Tigo Money / Bancard<br>
+                            <strong>Titular:</strong> Yogurt Alma<br>
+                            <strong>Monto:</strong> <span id="transfer-amount">Gs. 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Efectivo -->
+                <div id="cash-section" class="conditional-section active">
+                    <div class="form-group">
+                        <label class="form-label">¿Con cuánto pagás? (para calcular vuelto)</label>
+                        <input type="number" class="form-input" id="cash-amount" placeholder="Ej: 50000" oninput="calculateChange()">
+                        <div class="vuelto-box" id="change-display"></div>
+                    </div>
+                </div>
+
+                <button class="btn-confirm" id="btn-confirm" onclick="confirmOrder()">
+                    Confirmar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLAS ESTADO -->
+    <div class="status-screen" id="loading-screen">
+        <div class="status-icon loading"></div>
+        <h2 class="status-title">Procesando tu pedido</h2>
+        <p class="status-text">Estamos preparando tu orden...</p>
+    </div>
+
+    <div class="status-screen" id="success-screen">
+        <div class="status-icon success">✓</div>
+        <h2 class="status-title">¡Pedido confirmado!</h2>
+        <p class="status-text" id="success-message"></p>
+        <a href="#" class="whatsapp-btn" id="whatsapp-btn" target="_blank">
+            Enviar pedido por WhatsApp
+        </a>
+        <button onclick="resetOrder()" style="margin-top: 1.5rem; background: none; border: none; color: var(--color-secondary); text-decoration: underline; cursor: pointer;">
+            Hacer otro pedido
+        </button>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURACIÓN (rutas actualizadas según GitHub)
+        // ==========================================
+        const CONFIG = {
+            GITHUB: {
+                USER: 'eveliorosabal-cyber',
+                REPO: 'yogurt-alma-assets',
+                BRANCH: 'main',
+                PATHS: {
+                    slider: 'images/slider',
+                    productsCon: 'images/productos del dia/Con lactosa',
+                    productsSin: 'images/productos del dia/Sin lactosa',
+                    logos: 'images',  // Los logos están directamente en /images
+                    prices: 'prices.txt'
+                }
+            },
+            WHATSAPP: '595994883355',
+            ALIAS: '0994883355',
+            STORE_LAT: -25.2914380,
+            STORE_LNG: -57.6451651,
+            DELIVERY: {
+                zone1: { maxKm: 3, price: 5000, label: 'Cercana' },
+                zone2: { maxKm: 8, price: 8000, label: 'Media' },
+                zone3: { maxKm: 15, price: 12000, label: 'Lejana' }
+            },
+            GOOGLE_SHEETS_URL: 'https://script.google.com/macros/s/AKfycbyDIOjlGOFuVosYPlvRVnY9xEPoYxwi7D8koCl6LSBg9URFkhOUxNO1ZXcmDDG82jr1/exec'
+        };
+
+        // ==========================================
+        // GESTOR DE PRECIOS (desde GitHub)
+        // ==========================================
+        const PRICE_MANAGER = {
+            defaults: {
+                'PROD 1 LACT': 15000, 'PROD 2 LACT': 16000, 'PROD 3 LACT': 16000,
+                'PROD 4 LACT': 16000, 'PROD 5 LACT': 15500, 'PROD 6 LACT': 17000, 'PROD 7 LACT': 18000,
+                'PROD 8 SIN': 18000, 'PROD 9 SIN': 19000, 'PROD 10 SIN': 19000,
+                'PROD 11 SIN': 19000, 'PROD 12 SIN': 18500, 'PROD 13 SIN': 20000, 'PROD 14 SIN': 21000
+            },
+            current: {},
+            async load() {
+                const base = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/`;
+                const url = base + encodeURI(CONFIG.GITHUB.PATHS.prices) + '?t=' + Date.now();
+                console.log('Cargando precios desde:', url);
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const text = await response.text();
+                        console.log('Archivo prices.txt cargado, contenido:', text);
+                        this.parse(text);
+                    } else {
+                        console.warn('No se pudo cargar prices.txt, usando defaults');
+                        this.current = {...this.defaults};
+                    }
+                } catch (e) {
+                    console.warn('Error cargando precios, usando defaults', e);
+                    this.current = {...this.defaults};
+                }
+                return this.current;
+            },
+            parse(text) {
+                const lines = text.split('\n');
+                lines.forEach(line => {
+                    const match = line.match(/(PROD\s+\d+\s+(?:LACT|SIN))\s*[=:]\s*([\d.,]+)/i);
+                    if (match) {
+                        let key = match[1].toUpperCase().replace(/\s+/g, ' ').trim();
+                        const price = parseInt(match[2].replace(/\./g, '').replace(/,/g, '').replace(/\s/g, ''));
+                        if (!isNaN(price)) this.current[key] = price;
+                    }
+                });
+                Object.keys(this.defaults).forEach(key => {
+                    if (!this.current[key]) this.current[key] = this.defaults[key];
+                });
+            },
+            get(productKey) {
+                const normalizedKey = productKey.replace(/\s+/g, ' ').trim();
+                return this.current[normalizedKey] || this.defaults[normalizedKey] || 0;
+            },
+            generateTemplate() {
+                let content = '# Precios Yogurt Alma\n# Formato: PROD X LACT/SIN = precio\n\n';
+                Object.keys(this.defaults).forEach(key => {
+                    const price = this.current[key] || this.defaults[key];
+                    content += `${key} = ${price.toLocaleString('es-PY')}\n`;
+                });
+                return content;
+            }
+        };
+
+        // ==========================================
+        // FUNCIONES DE AYUDA PARA GITHUB
+        // ==========================================
+        async function listGitHubFiles(folderPath) {
+            const encodedPath = encodeURI(folderPath);
+            const url = `https://api.github.com/repos/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/contents/${encodedPath}?ref=${CONFIG.GITHUB.BRANCH}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Error al listar ${folderPath}: ${response.status}`);
+                const files = await response.json();
+                return files.filter(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i));
+            } catch (e) {
+                console.error(e);
+                return [];
+            }
+        }
+
+        // ==========================================
+        // SLIDER HERO
+        // ==========================================
+        let sliderInterval;
+        async function initSlider() {
+            const container = document.getElementById('hero-slider');
+            const loading = document.getElementById('slider-loading');
+            const dotsContainer = document.getElementById('slider-dots');
+            if (!container || !loading || !dotsContainer) return;
+            
+            const images = await listGitHubFiles(CONFIG.GITHUB.PATHS.slider);
+            if (images.length === 0) {
+                container.innerHTML = `<div class="slide active" style="background-image: url('https://via.placeholder.com/1920x1080/2C1810/FAF7F2?text=Yogurt+Alma');"></div>`;
+                loading.style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = '';
+            images.forEach((img, index) => {
+                const slide = document.createElement('div');
+                slide.className = `slide ${index === 0 ? 'active' : ''}`;
+                slide.style.backgroundImage = `url('${img.download_url}')`;
+                container.appendChild(slide);
+            });
+
+            dotsContainer.innerHTML = '';
+            images.forEach((_, i) => {
+                const dot = document.createElement('span');
+                dot.className = `dot ${i === 0 ? 'active' : ''}`;
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            });
+
+            loading.style.display = 'none';
+            startSliderAuto();
+        }
+
+        let currentSlide = 0;
+        function startSliderAuto() {
+            if (sliderInterval) clearInterval(sliderInterval);
+            sliderInterval = setInterval(() => {
+                const slides = document.querySelectorAll('.slide');
+                const dots = document.querySelectorAll('.dot');
+                if (slides.length === 0) return;
+                slides[currentSlide].classList.remove('active');
+                dots[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }, 5000);
+        }
+
+        function goToSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            if (slides.length === 0) return;
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            clearInterval(sliderInterval);
+            startSliderAuto();
+        }
+
+        // ==========================================
+        // CARGAR LOGOS (desde /images con nombres exactos)
+        // ==========================================
+        async function loadLogos() {
+            const logoCon = document.getElementById('logo-con');
+            const logoSin = document.getElementById('logo-sin');
+            
+            // Construir la URL base para raw.githubusercontent
+            const base = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/`;
+            
+            // Rutas completas de los logos (sin encode adicional porque ya está la carpeta)
+            const urlCon = base + 'images/Logo%20lac.png';  // espacio codificado como %20
+            const urlSin = base + 'images/logo%20sin%20lac.png';
+            
+            console.log('URL logo con lactosa:', urlCon);
+            console.log('URL logo sin lactosa:', urlSin);
+            
+            if (logoCon) {
+                logoCon.src = urlCon;
+                logoCon.onerror = () => console.error('Error cargando logo con lactosa desde', urlCon);
+                logoCon.onload = () => console.log('Logo con lactosa cargado OK');
+            }
+            if (logoSin) {
+                logoSin.src = urlSin;
+                logoSin.onerror = () => console.error('Error cargando logo sin lactosa desde', urlSin);
+                logoSin.onload = () => console.log('Logo sin lactosa cargado OK');
+            }
+        }
+
+        // ==========================================
+        // CATÁLOGO DE PRODUCTOS
+        // ==========================================
+        let CATALOG = { con: [], sin: [] };
+        let cart = {};
+
+        async function loadProducts() {
+            const conFiles = await listGitHubFiles(CONFIG.GITHUB.PATHS.productsCon);
+            const sinFiles = await listGitHubFiles(CONFIG.GITHUB.PATHS.productsSin);
+
+            console.log('Archivos con lactosa:', conFiles.map(f => f.name));
+            console.log('Archivos sin lactosa:', sinFiles.map(f => f.name));
+
+            function getProductName(key) {
+                const map = {
+                    'PROD 1 LACT': 'Natural Clásico',
+                    'PROD 2 LACT': 'Fresa Selecta',
+                    'PROD 3 LACT': 'Mora Silvestre',
+                    'PROD 4 LACT': 'Durazno de Estación',
+                    'PROD 5 LACT': 'Vainilla Bourbon',
+                    'PROD 6 LACT': 'Coco Natural',
+                    'PROD 7 LACT': 'Mix de Frutos',
+                    'PROD 8 SIN': 'Natural Sin Lactosa',
+                    'PROD 9 SIN': 'Fresa Sin Lactosa',
+                    'PROD 10 SIN': 'Mora Sin Lactosa',
+                    'PROD 11 SIN': 'Durazno Sin Lactosa',
+                    'PROD 12 SIN': 'Vainilla Sin Lactosa',
+                    'PROD 13 SIN': 'Coco Sin Lactosa',
+                    'PROD 14 SIN': 'Mix Sin Lactosa'
+                };
+                return map[key] || key;
+            }
+
+            function getProductDescription(key) {
+                const map = {
+                    'PROD 1 LACT': 'El auténtico sabor tradicional, cremoso y equilibrado',
+                    'PROD 2 LACT': 'Con frutillas frescas maceradas en su propio jugo',
+                    'PROD 3 LACT': 'Arándanos y moras en equilibrio perfecto',
+                    'PROD 4 LACT': 'Duraznos maduros en almíbar artesanal',
+                    'PROD 5 LACT': 'Vainilla Madagascar de origen ético',
+                    'PROD 6 LACT': 'Con leche de coco y coco rallado tostado',
+                    'PROD 7 LACT': 'Combinación especial de frutos rojos y tropicales',
+                    'PROD 8 SIN': 'Digestivo y ligero, manteniendo toda la cremosidad',
+                    'PROD 9 SIN': 'La misma frescura, ahora sin lactosa',
+                    'PROD 10 SIN': 'Antioxidantes naturales en formato digestivo',
+                    'PROD 11 SIN': 'Dulzura natural sin compromisos',
+                    'PROD 12 SIN': 'Suavidad y sabor en perfecta armonía',
+                    'PROD 13 SIN': 'Doble coco para máxima cremosidad vegetal',
+                    'PROD 14 SIN': 'La experiencia completa, libre de lactosa'
+                };
+                return map[key] || 'Delicioso yogurt artesanal';
+            }
+
+            CATALOG.con = conFiles.map(file => {
+                let key = file.name.replace(/\.[^/.]+$/, '').toUpperCase().replace(/\s+/g, ' ').trim();
+                const idMatch = key.match(/\d+/);
+                const id = idMatch ? 'CL' + idMatch[0].padStart(2, '0') : 'CL00';
+                const price = PRICE_MANAGER.get(key);
+                console.log(`Producto con: ${file.name} -> clave: ${key} -> precio: ${price}`);
+                return {
+                    id: id,
+                    file: file.name,
+                    name: getProductName(key),
+                    desc: getProductDescription(key),
+                    weight: '500g',
+                    price: price,
+                    image: file.download_url,
+                    category: 'con',
+                    badge: null
+                };
+            });
+
+            CATALOG.sin = sinFiles.map(file => {
+                let key = file.name.replace(/\.[^/.]+$/, '').toUpperCase().replace(/\s+/g, ' ').trim();
+                const idMatch = key.match(/\d+/);
+                const id = idMatch ? 'SL' + idMatch[0].padStart(2, '0') : 'SL00';
+                const price = PRICE_MANAGER.get(key);
+                console.log(`Producto sin: ${file.name} -> clave: ${key} -> precio: ${price}`);
+                return {
+                    id: id,
+                    file: file.name,
+                    name: getProductName(key),
+                    desc: getProductDescription(key),
+                    weight: '500g',
+                    price: price,
+                    image: file.download_url,
+                    category: 'sin',
+                    badge: 'Sin Lactosa'
+                };
+            });
+
+            cart = {};
+            [...CATALOG.con, ...CATALOG.sin].forEach(p => cart[p.id] = 0);
+
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const gridCon = document.getElementById('grid-con');
+            const gridSin = document.getElementById('grid-sin');
+            
+            if (gridCon) {
+                gridCon.innerHTML = '';
+                if (CATALOG.con.length === 0) {
+                    gridCon.innerHTML = '<div class="error-message">No hay productos disponibles en este momento.</div>';
+                } else {
+                    CATALOG.con.forEach(prod => gridCon.appendChild(createProductCard(prod)));
+                }
+            }
+            
+            if (gridSin) {
+                gridSin.innerHTML = '';
+                if (CATALOG.sin.length === 0) {
+                    gridSin.innerHTML = '<div class="error-message">No hay productos disponibles en este momento.</div>';
+                } else {
+                    CATALOG.sin.forEach(prod => gridSin.appendChild(createProductCard(prod)));
+                }
+            }
+        }
+
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card fade-up';
+            card.innerHTML = `
+                <div class="product-image-wrapper">
+                    <img src="${product.image}" alt="${product.name}" class="product-image" 
+                         onerror="this.src='https://via.placeholder.com/400x300/F5F0E8/2C1810?text=${encodeURIComponent(product.name)}'">
+                    ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
+                </div>
+                <div class="product-info">
+                    <div class="product-meta">
+                        <span class="product-weight">${product.weight}</span>
+                        <span class="product-stock">Disponible hoy</span>
+                    </div>
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.desc}</p>
+                    <div class="product-footer">
+                        <span class="product-price">Gs. ${product.price.toLocaleString('es-PY')}</span>
+                        <div class="quantity-selector">
+                            <button class="qty-btn" onclick="updateQuantity('${product.id}', -1)">−</button>
+                            <span class="qty-value" id="qty-${product.id}">0</span>
+                            <button class="qty-btn" onclick="updateQuantity('${product.id}', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // ==========================================
+        // CARRITO (sin cambios)
+        // ==========================================
+        function updateQuantity(productId, delta) {
+            const newQty = cart[productId] + delta;
+            if (newQty >= 0) {
+                cart[productId] = newQty;
+                const el = document.getElementById(`qty-${productId}`);
+                if (el) el.textContent = newQty;
+                updateCart();
+            }
+        }
+
+        function updateCart() {
+            const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
+            const subtotal = items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0);
+            const total = subtotal + deliveryCost;
+            
+            const cartTotalEl = document.getElementById('cart-total');
+            if (cartTotalEl) cartTotalEl.textContent = total.toLocaleString('es-PY');
+            
+            const cartFloat = document.getElementById('cart-float');
+            if (cartFloat) cartFloat.classList.toggle('active', items.length > 0);
+            
+            const summarySubtotal = document.getElementById('summary-subtotal');
+            if (summarySubtotal) summarySubtotal.textContent = subtotal.toLocaleString('es-PY');
+            
+            const summaryTotal = document.getElementById('summary-total');
+            if (summaryTotal) summaryTotal.textContent = total.toLocaleString('es-PY');
+            
+            const transferAmount = document.getElementById('transfer-amount');
+            if (transferAmount) transferAmount.textContent = 'Gs. ' + total.toLocaleString('es-PY');
+            
+            const container = document.getElementById('summary-items');
+            if (container) {
+                if (items.length === 0) {
+                    container.innerHTML = '<p style="color: #999; font-size: 0.9rem;">No hay productos seleccionados</p>';
+                } else {
+                    container.innerHTML = items.map(p => `
+                        <div class="summary-item">
+                            <span>${p.name} × ${cart[p.id]}</span>
+                            <span>Gs. ${(cart[p.id] * p.price).toLocaleString('es-PY')}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        // ==========================================
+        // CHECKOUT (sin cambios)
+        // ==========================================
+        let deliveryCost = 0;
+        let currentPayment = 'cash';
+        let currentLocationTab = 'gps';
+        let userLocation = null;
+
+        function openCheckout() {
+            const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
+            if (items.length === 0) {
+                alert('Agregá productos a tu pedido');
+                return;
+            }
+            updateCart();
+            const modal = document.getElementById('modal-checkout');
+            if (modal) modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCheckout(e) {
+            if (!e || e.target.id === 'modal-checkout') {
+                const modal = document.getElementById('modal-checkout');
+                if (modal) modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleDeliveryChange() {
+            const type = document.getElementById('delivery-type').value;
+            const locationSection = document.getElementById('location-section');
+            
+            if (type === 'delivery') {
+                if (locationSection) locationSection.classList.add('active');
+                if (userLocation && userLocation.lat) {
+                    calculateDeliveryCost(userLocation.lat, userLocation.lng);
+                } else if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        pos => calculateDeliveryCost(pos.coords.latitude, pos.coords.longitude),
+                        () => { deliveryCost = 8000; updateDeliveryDisplay(); }
+                    );
+                }
+            } else {
+                if (locationSection) locationSection.classList.remove('active');
+                deliveryCost = 0;
+                updateDeliveryDisplay();
+            }
+        }
+
+        function calculateDeliveryCost(lat, lng) {
+            const dist = calculateDistance(CONFIG.STORE_LAT, CONFIG.STORE_LNG, lat, lng);
+            let rate = CONFIG.DELIVERY.zone3;
+            if (dist <= CONFIG.DELIVERY.zone1.maxKm) rate = CONFIG.DELIVERY.zone1;
+            else if (dist <= CONFIG.DELIVERY.zone2.maxKm) rate = CONFIG.DELIVERY.zone2;
+            
+            deliveryCost = rate.price;
+            userLocation = { ...userLocation, lat, lng, distance: dist };
+            updateDeliveryDisplay();
+            
+            const summaryDelivery = document.getElementById('summary-delivery');
+            if (summaryDelivery) {
+                summaryDelivery.innerHTML = `Gs. ${deliveryCost.toLocaleString('es-PY')} <small style="color: #666">(${rate.label}, ${dist.toFixed(1)}km)</small>`;
+            }
+        }
+
+        function updateDeliveryDisplay() {
+            const summaryDelivery = document.getElementById('summary-delivery');
+            if (summaryDelivery) {
+                summaryDelivery.textContent = deliveryCost === 0 ? 'Gratis' : `Gs. ${deliveryCost.toLocaleString('es-PY')}`;
+            }
+            updateCart();
+        }
+
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        // ==========================================
+        // TABS DE UBICACIÓN
+        // ==========================================
+        function switchTab(tab, el) {
+            currentLocationTab = tab;
+            document.querySelectorAll('.location-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.location-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById(`panel-${tab}`);
+            if (panel) panel.classList.add('active');
+        }
+
+        function getGPSLocation() {
+            if (!navigator.geolocation) {
+                alert('Tu navegador no soporta geolocalización');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                if (window.google && google.maps) {
+                    const geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+                        if (status === 'OK' && results[0]) {
+                            userLocation = { lat, lng, address: results[0].formatted_address };
+                            const gpsAddress = document.getElementById('gps-address');
+                            if (gpsAddress) gpsAddress.textContent = results[0].formatted_address;
+                            const gpsCoords = document.getElementById('gps-coords');
+                            if (gpsCoords) gpsCoords.textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                            const gpsInfo = document.getElementById('gps-info');
+                            if (gpsInfo) gpsInfo.classList.add('active');
+                            calculateDeliveryCost(lat, lng);
+                        } else {
+                            userLocation = { lat, lng, address: `${lat}, ${lng}` };
+                            const gpsAddress = document.getElementById('gps-address');
+                            if (gpsAddress) gpsAddress.textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                            const gpsInfo = document.getElementById('gps-info');
+                            if (gpsInfo) gpsInfo.classList.add('active');
+                            calculateDeliveryCost(lat, lng);
+                        }
+                    });
+                } else {
+                    userLocation = { lat, lng, address: `${lat}, ${lng}` };
+                    const gpsAddress = document.getElementById('gps-address');
+                    if (gpsAddress) gpsAddress.textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    const gpsInfo = document.getElementById('gps-info');
+                    if (gpsInfo) gpsInfo.classList.add('active');
+                    calculateDeliveryCost(lat, lng);
+                }
+            }, () => {
+                alert('No se pudo obtener la ubicación');
+            });
+        }
+
+        function copyGPSLocation() {
+            if (!userLocation) return;
+            const text = `${userLocation.address}\nCoordenadas: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Dirección copiada');
+            });
+        }
+
+        // ==========================================
+        // PAGO
+        // ==========================================
+        function selectPayment(method) {
+            currentPayment = method;
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            const payOption = document.getElementById(`pay-${method}`);
+            if (payOption) payOption.classList.add('selected');
+            
+            const transferSection = document.getElementById('transfer-section');
+            if (transferSection) transferSection.classList.toggle('active', method === 'transfer');
+            
+            const cashSection = document.getElementById('cash-section');
+            if (cashSection) cashSection.classList.toggle('active', method === 'cash');
+        }
+
+        function calculateChange() {
+            const amount = parseInt(document.getElementById('cash-amount').value) || 0;
+            const total = [...CATALOG.con, ...CATALOG.sin].reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost;
+            const change = amount - total;
+            const display = document.getElementById('change-display');
+            if (!display) return;
+            
+            if (amount === 0) {
+                display.style.display = 'none';
+                return;
+            }
+            
+            display.style.display = 'block';
+            if (change < 0) {
+                display.className = 'vuelto-box error';
+                display.textContent = `Faltan Gs. ${Math.abs(change).toLocaleString('es-PY')}`;
+            } else {
+                display.className = 'vuelto-box ok';
+                display.textContent = `Vuelto: Gs. ${change.toLocaleString('es-PY')}`;
+            }
+        }
+
+        function copyAlias() {
+            navigator.clipboard.writeText(CONFIG.ALIAS).then(() => {
+                const box = document.querySelector('.alias-box');
+                if (box) {
+                    const original = box.textContent;
+                    box.textContent = '¡COPIADO!';
+                    setTimeout(() => box.textContent = original, 1500);
+                }
+            });
+        }
+
+        // ==========================================
+        // CONFIRMAR PEDIDO
+        // ==========================================
+        async function confirmOrder() {
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
+            const deliveryType = document.getElementById('delivery-type').value;
+            
+            if (!name) { alert('Ingresá tu nombre'); return; }
+            if (!phone) { alert('Ingresá tu WhatsApp'); return; }
+            
+            let address = '';
+            if (deliveryType === 'delivery') {
+                if (currentLocationTab === 'gps') {
+                    if (!userLocation || !userLocation.address) {
+                        alert('Primero obtené tu ubicación con GPS');
+                        return;
+                    }
+                    address = userLocation.address;
+                } else if (currentLocationTab === 'maps') {
+                    address = document.getElementById('maps-link').value.trim();
+                    if (!address) { alert('Pegá el enlace de Google Maps o la dirección'); return; }
+                }
+            } else {
+                address = 'Retiro en local - Yogurt Alma';
+            }
+            
+            if (currentPayment === 'cash') {
+                const amount = parseInt(document.getElementById('cash-amount').value) || 0;
+                const total = [...CATALOG.con, ...CATALOG.sin].reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost;
+                if (amount < total) { alert('El monto es insuficiente'); return; }
+            }
+            
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) loadingScreen.classList.add('active');
+            
+            const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
+            const order = {
+                id: 'YA-' + Date.now().toString().slice(-6),
+                timestamp: new Date().toISOString(),
+                customer: { name, phone },
+                items: items.map(p => ({ name: p.name, qty: cart[p.id], price: p.price })),
+                totals: {
+                    subtotal: items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0),
+                    delivery: deliveryCost,
+                    total: items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost
+                },
+                delivery: {
+                    type: deliveryType,
+                    address: address,
+                    coords: userLocation ? `${userLocation.lat},${userLocation.lng}` : ''
+                },
+                payment: { method: currentPayment, alias: currentPayment === 'transfer' ? CONFIG.ALIAS : null }
+            };
+            
+            const message = generateSecureMessage(order);
+            const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(message)}`;
+            
+            try {
+                await fetch(CONFIG.GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(order)
+                });
+            } catch (e) {}
+            
+            setTimeout(() => {
+                if (loadingScreen) loadingScreen.classList.remove('active');
+                const successScreen = document.getElementById('success-screen');
+                if (successScreen) successScreen.classList.add('active');
+                
+                const whatsappBtn = document.getElementById('whatsapp-btn');
+                if (whatsappBtn) whatsappBtn.href = whatsappUrl;
+                
+                const successMsg = document.getElementById('success-message');
+                if (successMsg) {
+                    successMsg.textContent = currentPayment === 'transfer' 
+                        ? `Tu pedido está pendiente de pago.\n\nAlias: ${CONFIG.ALIAS}\nMonto: Gs. ${order.totals.total.toLocaleString('es-PY')}\n\nUna vez realizada la transferencia, envianos el comprobante por WhatsApp.`
+                        : 'Tu pedido está confirmado. Te contactaremos cuando esté listo.';
+                }
+            }, 1500);
+        }
+
+        function generateSecureMessage(order) {
+            const lines = [
+                '🥛 *YOGURT ALMA - PEDIDO OFICIAL*',
+                '',
+                `*N° Pedido:* ${order.id}`,
+                `*Fecha:* ${new Date().toLocaleString('es-PY')}`,
+                '',
+                '*CLIENTE:*',
+                `Nombre: ${order.customer.name}`,
+                `Tel: ${order.customer.phone}`,
+                '',
+                '*PRODUCTOS:*'
+            ];
+            
+            order.items.forEach(item => {
+                lines.push(`• ${item.qty}x ${item.name}`);
+                lines.push(`  Gs. ${(item.qty * item.price).toLocaleString('es-PY')}`);
+            });
+            
+            lines.push('');
+            lines.push('*TOTALES:*');
+            lines.push(`Subtotal: Gs. ${order.totals.subtotal.toLocaleString('es-PY')}`);
+            if (order.totals.delivery > 0) {
+                lines.push(`Delivery: Gs. ${order.totals.delivery.toLocaleString('es-PY')}`);
+            }
+            lines.push(`*TOTAL A PAGAR: Gs. ${order.totals.total.toLocaleString('es-PY')}*`);
+            lines.push('');
+            
+            lines.push('*ENTREGA:*');
+            lines.push(`Tipo: ${order.delivery.type === 'pickup' ? 'Retiro en local' : 'Delivery'}`);
+            lines.push(`Dirección: ${order.delivery.address}`);
+            if (order.delivery.coords) {
+                lines.push(`Maps: https://maps.google.com/?q=${order.delivery.coords}`);
+            }
+            lines.push('');
+            
+            lines.push('*PAGO:*');
+            if (order.payment.method === 'transfer') {
+                lines.push(`Método: Transferencia`);
+                lines.push(`Alias: ${order.payment.alias}`);
+                lines.push(`Estado: PENDIENTE (esperando comprobante)`);
+            } else {
+                lines.push(`Método: Efectivo`);
+                const amount = document.getElementById('cash-amount').value;
+                const change = parseInt(amount) - order.totals.total;
+                lines.push(`Paga con: Gs. ${parseInt(amount).toLocaleString('es-PY')}`);
+                lines.push(`Vuelto: Gs. ${change.toLocaleString('es-PY')}`);
+            }
+            
+            lines.push('');
+            lines.push('✅ Pedido generado automáticamente');
+            lines.push('📍 Por favor no modifiques este mensaje');
+            
+            return lines.join('\n');
+        }
+
+        function resetOrder() {
+            location.reload();
+        }
+
+        // ==========================================
+        // UTILIDADES
+        // ==========================================
+        function scrollToProducts() {
+            document.getElementById('products-con').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        }
+
+        function setupAdminAccess() {
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    const adminPanel = document.getElementById('admin-panel');
+                    if (adminPanel) adminPanel.classList.toggle('visible');
+                }
+            });
+        }
+
+        function downloadPricesTemplate() {
+            const content = PRICE_MANAGER.generateTemplate();
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'prices.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ==========================================
+        // INICIALIZACIÓN PRINCIPAL
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await PRICE_MANAGER.load();
+                await loadLogos();
+                await initSlider();
+                await loadProducts();
+            } catch (e) {
+                console.error('Error en inicialización:', e);
+            } finally {
+                const sliderLoading = document.getElementById('slider-loading');
+                if (sliderLoading) sliderLoading.style.display = 'none';
+                
+                const loadingCon = document.getElementById('loading-con');
+                if (loadingCon) loadingCon.style.display = 'none';
+                
+                const loadingSin = document.getElementById('loading-sin');
+                if (loadingSin) loadingSin.style.display = 'none';
+                
+                const gridCon = document.getElementById('grid-con');
+                if (gridCon) gridCon.classList.remove('hidden');
+                
+                const gridSin = document.getElementById('grid-sin');
+                if (gridSin) gridSin.classList.remove('hidden');
+            }
+            
+            initScrollAnimations();
+            setupAdminAccess();
+        });
+    </script>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbVibirARCeKKYtTGI13eY5JAy8M9iByM&libraries=places&language=es" async defer></script>
+</body>
+</html>
