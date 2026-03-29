@@ -105,7 +105,19 @@
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN GLOBAL
+        // CONFIGURACIÓN GITHUB
+        // ==========================================
+        const CONFIG_GITHUB = {
+            USER: 'eveliorosabal-cyber',
+            REPO: 'yogurt-alma-assets',
+            BRANCH: 'main',
+            PATHS: {
+                slider: 'images/slider'
+            }
+        };
+
+        // ==========================================
+        // DATOS GLOBALES
         // ==========================================
         let CONFIG = {};      // se llena desde config.json
         let CATALOG = {};     // productos agrupados por categoría
@@ -172,7 +184,7 @@
         // ==========================================
         let sliderInterval;
         let currentSlide = 0;
-        let sliderItems = []; // almacena { type: 'image', url } o { type: 'video', url }
+        let sliderItems = [];
 
         async function initSlider() {
             const container = document.getElementById('hero-slider');
@@ -189,14 +201,12 @@
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const files = await response.json();
-                // Filtrar imágenes y videos
                 const mediaFiles = files.filter(file => {
                     const ext = file.name.split('.').pop().toLowerCase();
                     return ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'webm', 'mov'].includes(ext);
                 });
                 if (mediaFiles.length === 0) throw new Error('No media files');
 
-                // Construir items
                 sliderItems = mediaFiles.map(file => {
                     const ext = file.name.split('.').pop().toLowerCase();
                     const isVideo = ['mp4', 'webm', 'mov'].includes(ext);
@@ -206,8 +216,9 @@
                     };
                 });
 
-                // Limpiar container y agregar slides
-                container.innerHTML = '';
+                // Limpiar container
+                while (container.firstChild) container.removeChild(container.firstChild);
+
                 sliderItems.forEach((item, idx) => {
                     const slideDiv = document.createElement('div');
                     slideDiv.className = `slide ${idx === 0 ? 'active' : ''}`;
@@ -332,37 +343,57 @@
             }
         }
 
+        // Versión corregida de createProductCard (sin error de sintaxis)
         function createProductCard(product) {
             const card = document.createElement('div');
             card.className = 'product-card fade-up';
-            card.innerHTML = `
-                <div class="product-image-wrapper">
-                    <img src="${product.image}" alt="${product.name}" class="product-image" 
-                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23F5F0E8\'/%3E%3Ctext x=\'50%%\' y=\'50%%\' font-size=\'16\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%238B6F47\'%3E${encodeURIComponent(product.name)}%3C/text%3E%3C/svg%3E'">
-                    ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
+
+            const img = document.createElement('img');
+            img.className = 'product-image';
+            img.alt = product.name;
+            img.src = product.image;
+            img.onerror = function() {
+                this.onerror = null;
+                const svg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23F5F0E8'/%3E%3Ctext x='50%25' y='50%25' font-size='16' text-anchor='middle' dy='.3em' fill='%238B6F47'%3E${encodeURIComponent(product.name)}%3C/text%3E%3C/svg%3E`;
+                this.src = svg;
+            };
+
+            const imageWrapper = document.createElement('div');
+            imageWrapper.className = 'product-image-wrapper';
+            imageWrapper.appendChild(img);
+            if (product.badge) {
+                const badge = document.createElement('span');
+                badge.className = 'product-badge';
+                badge.textContent = product.badge;
+                imageWrapper.appendChild(badge);
+            }
+
+            const productInfo = document.createElement('div');
+            productInfo.className = 'product-info';
+            productInfo.innerHTML = `
+                <div class="product-meta">
+                    <span class="product-weight">${product.weight}</span>
+                    <span class="product-stock">Disponible hoy</span>
                 </div>
-                <div class="product-info">
-                    <div class="product-meta">
-                        <span class="product-weight">${product.weight}</span>
-                        <span class="product-stock">Disponible hoy</span>
-                    </div>
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-description">${product.desc}</p>
-                    <div class="product-footer">
-                        <span class="product-price">Gs. ${product.price.toLocaleString('es-PY')}</span>
-                        <div class="quantity-selector">
-                            <button class="qty-btn" onclick="updateQuantity('${product.id}', -1)">−</button>
-                            <span class="qty-value" id="qty-${product.id}">0</span>
-                            <button class="qty-btn" onclick="updateQuantity('${product.id}', 1)">+</button>
-                        </div>
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-description">${product.desc}</p>
+                <div class="product-footer">
+                    <span class="product-price">Gs. ${product.price.toLocaleString('es-PY')}</span>
+                    <div class="quantity-selector">
+                        <button class="qty-btn" onclick="updateQuantity('${product.id}', -1)">−</button>
+                        <span class="qty-value" id="qty-${product.id}">0</span>
+                        <button class="qty-btn" onclick="updateQuantity('${product.id}', 1)">+</button>
                     </div>
                 </div>
             `;
+
+            card.appendChild(imageWrapper);
+            card.appendChild(productInfo);
             return card;
         }
 
         // ==========================================
-        // CARRITO Y CHECKOUT (igual que antes, pero usando CONFIG)
+        // CARRITO Y CHECKOUT
         // ==========================================
         function updateQuantity(productId, delta) {
             const newQty = cart[productId] + delta;
@@ -382,7 +413,6 @@
 
             document.getElementById('cart-total').textContent = total.toLocaleString('es-PY');
             document.getElementById('cart-float').classList.toggle('active', items.length > 0);
-            // actualizar resumen en modal cuando esté abierto
             if (modalBody && modalBody.children.length) updateCheckoutSummary(subtotal, total);
         }
 
@@ -418,16 +448,13 @@
                 return;
             }
             updateCart();
-            // Llenar modal dinámicamente (estructura similar a la original pero con valores de CONFIG)
             const modal = document.getElementById('modal-checkout');
             if (modal) modal.classList.add('active');
             document.body.style.overflow = 'hidden';
 
-            // Si no está lleno, lo llenamos
             if (modalBody.children.length === 0) {
                 renderCheckoutModal();
             } else {
-                // Actualizar resumen
                 const subtotal = items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0);
                 const total = subtotal + deliveryCost;
                 updateCheckoutSummary(subtotal, total);
@@ -435,7 +462,6 @@
         }
 
         function renderCheckoutModal() {
-            // Generar HTML del modal usando CONFIG
             const deliveryZonesHtml = CONFIG.delivery_zones.map(z => `<option value="${z.maxKm}">${z.label} (hasta ${z.maxKm}km) - Gs. ${z.price.toLocaleString('es-PY')}</option>`).join('');
             modalBody.innerHTML = `
                 <div class="order-summary">
@@ -852,26 +878,16 @@
         // ==========================================
         // INICIALIZACIÓN
         // ==========================================
-        const CONFIG_GITHUB = {
-            USER: 'eveliorosabal-cyber',
-            REPO: 'yogurt-alma-assets',
-            BRANCH: 'main',
-            PATHS: {
-                slider: 'images/slider'
-            }
-        };
-
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                await loadConfig();        // primero configuración
-                await loadProductsFromJSON(); // luego productos
+                await loadConfig();
+                await loadProductsFromJSON();
                 renderHero();
                 renderCategories();
                 await initSlider();
                 initThemeSwitcher();
                 initScrollAnimations();
                 setupAdminAccess();
-                // Ocultar skeletons (ya se ocultan en renderCategories)
             } catch (err) {
                 console.error('Error fatal:', err);
                 alert('Error al cargar la página. Revisa tu conexión e intenta de nuevo.');
