@@ -7,7 +7,7 @@
         "price": 15000,
         "category": "con",
         "badge": null,
-        "imageFile": "PROD 1 LACT.jpg"
+        "imageFile": "producto 1.jpg"
     },
     {
         "id": "CL02",
@@ -17,7 +17,7 @@
         "price": 16000,
         "category": "con",
         "badge": null,
-        "imageFile": "PROD 2 LACT.jpg"
+        "imageFile": "producto 2.jpg"
     },
     {
         "id": "CL03",
@@ -27,7 +27,7 @@
         "price": 16000,
         "category": "con",
         "badge": null,
-        "imageFile": "PROD 3 LACT.jpg"
+        "imageFile": "producto3.jpg"
     },
     {
         "id": "CL04",
@@ -77,7 +77,7 @@
         "price": 18000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 8 SIN.jpg"
+        "imageFile": "producto 1.jpg"
     },
     {
         "id": "SL02",
@@ -87,7 +87,7 @@
         "price": 19000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 9 SIN.jpg"
+        "imageFile": "producto 2.jpg"
     },
     {
         "id": "SL03",
@@ -97,7 +97,7 @@
         "price": 19000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 10 SIN.jpg"
+        "imageFile": "producto 3.jpg"
     },
     {
         "id": "SL04",
