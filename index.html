@@ -242,7 +242,7 @@
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN (rutas actualizadas según GitHub)
+        // CONFIGURACIÓN
         // ==========================================
         const CONFIG = {
             GITHUB: {
@@ -270,31 +270,57 @@
         };
 
         // ==========================================
-        // GESTOR DE PRODUCTOS (desde JSON)
+        // DATOS GLOBALES
         // ==========================================
         let CATALOG = { con: [], sin: [] };
         let cart = {};
+        let deliveryCost = 0;
+        let currentPayment = 'cash';
+        let currentLocationTab = 'gps';
+        let userLocation = null;
 
+        // ==========================================
+        // FUNCIÓN PARA CARGAR LOGOS
+        // ==========================================
+        async function loadLogos() {
+            const logoCon = document.getElementById('logo-con');
+            const logoSin = document.getElementById('logo-sin');
+            
+            const base = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/`;
+            const urlCon = base + 'images/logos/Logo%20lac.png';
+            const urlSin = base + 'images/logos/logo%20sin%20lac.png';
+            
+            if (logoCon) {
+                logoCon.src = urlCon;
+                logoCon.onerror = () => console.error('Error cargando logo con lactosa');
+            }
+            if (logoSin) {
+                logoSin.src = urlSin;
+                logoSin.onerror = () => console.error('Error cargando logo sin lactosa');
+            }
+        }
+
+        // ==========================================
+        // CARGAR PRODUCTOS DESDE JSON
+        // ==========================================
         async function loadProductsFromJSON() {
             const base = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/`;
             const url = base + CONFIG.GITHUB.PATHS.productsJSON + '?t=' + Date.now();
-            console.log('Cargando productos desde:', url);
+            
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const productos = await response.json();
-                console.log('Productos cargados:', productos);
                 
-                // Clasificar productos
                 CATALOG.con = productos.filter(p => p.category === 'con');
                 CATALOG.sin = productos.filter(p => p.category === 'sin');
                 
                 // Construir URLs de imágenes
                 CATALOG.con.forEach(p => {
-                    p.image = `${base}${CONFIG.GITHUB.PATHS.productsCon}/${p.imageFile}`;
+                    p.image = `${base}${CONFIG.GITHUB.PATHS.productsCon}/${encodeURIComponent(p.imageFile)}`;
                 });
                 CATALOG.sin.forEach(p => {
-                    p.image = `${base}${CONFIG.GITHUB.PATHS.productsSin}/${p.imageFile}`;
+                    p.image = `${base}${CONFIG.GITHUB.PATHS.productsSin}/${encodeURIComponent(p.imageFile)}`;
                 });
                 
                 // Inicializar carrito
@@ -307,6 +333,11 @@
                 // Mostrar mensaje de error en las secciones
                 document.getElementById('grid-con').innerHTML = '<div class="error-message">Error al cargar productos. Por favor recarga la página.</div>';
                 document.getElementById('grid-sin').innerHTML = '<div class="error-message">Error al cargar productos. Por favor recarga la página.</div>';
+                // Ocultar skeletons
+                document.getElementById('loading-con').style.display = 'none';
+                document.getElementById('loading-sin').style.display = 'none';
+                document.getElementById('grid-con').classList.remove('hidden');
+                document.getElementById('grid-sin').classList.remove('hidden');
             }
         }
 
@@ -331,6 +362,12 @@
                     CATALOG.sin.forEach(prod => gridSin.appendChild(createProductCard(prod)));
                 }
             }
+            
+            // Ocultar skeletons y mostrar grids
+            document.getElementById('loading-con').style.display = 'none';
+            document.getElementById('loading-sin').style.display = 'none';
+            document.getElementById('grid-con').classList.remove('hidden');
+            document.getElementById('grid-sin').classList.remove('hidden');
         }
 
         function createProductCard(product) {
@@ -363,7 +400,7 @@
         }
 
         // ==========================================
-        // CARRITO Y CHECKOUT (igual que antes)
+        // CARRITO
         // ==========================================
         function updateQuantity(productId, delta) {
             const newQty = cart[productId] + delta;
@@ -375,18 +412,25 @@
             }
         }
 
-        let deliveryCost = 0;
-
         function updateCart() {
             const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
             const subtotal = items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0);
             const total = subtotal + deliveryCost;
             
-            document.getElementById('cart-total').textContent = total.toLocaleString('es-PY');
-            document.getElementById('cart-float').classList.toggle('active', items.length > 0);
-            document.getElementById('summary-subtotal').textContent = subtotal.toLocaleString('es-PY');
-            document.getElementById('summary-total').textContent = total.toLocaleString('es-PY');
-            document.getElementById('transfer-amount').textContent = 'Gs. ' + total.toLocaleString('es-PY');
+            const cartTotalEl = document.getElementById('cart-total');
+            if (cartTotalEl) cartTotalEl.textContent = total.toLocaleString('es-PY');
+            
+            const cartFloat = document.getElementById('cart-float');
+            if (cartFloat) cartFloat.classList.toggle('active', items.length > 0);
+            
+            const summarySubtotal = document.getElementById('summary-subtotal');
+            if (summarySubtotal) summarySubtotal.textContent = subtotal.toLocaleString('es-PY');
+            
+            const summaryTotal = document.getElementById('summary-total');
+            if (summaryTotal) summaryTotal.textContent = total.toLocaleString('es-PY');
+            
+            const transferAmount = document.getElementById('transfer-amount');
+            if (transferAmount) transferAmount.textContent = 'Gs. ' + total.toLocaleString('es-PY');
             
             const container = document.getElementById('summary-items');
             if (container) {
@@ -403,29 +447,415 @@
             }
         }
 
-        // Funciones de checkout (openCheckout, closeCheckout, handleDeliveryChange, etc.)
-        // Se mantienen idénticas a las originales, por brevedad las omito aquí,
-        // pero en el archivo final deben estar completas. Como están en el código original,
-        // las incluiré en el script final.
-        // Para evitar repetir, en la respuesta final pondré el script completo con todas las funciones.
-
-        // Aquí van las funciones originales de checkout, ubicación, pago, etc.
-        // (por razones de espacio, en este ejemplo no las repito, pero en el archivo final sí están todas).
-
         // ==========================================
-        // FUNCIONES ADICIONALES (temas, admin, etc.)
+        // CHECKOUT
         // ==========================================
-        function initThemeSwitcher() {
-            const btns = document.querySelectorAll('.theme-btn');
-            const savedTheme = localStorage.getItem('yogurt-theme') || 'default';
-            document.body.setAttribute('data-theme', savedTheme);
+        function openCheckout() {
+            const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
+            if (items.length === 0) {
+                alert('Agregá productos a tu pedido');
+                return;
+            }
+            updateCart();
+            const modal = document.getElementById('modal-checkout');
+            if (modal) modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCheckout(e) {
+            if (!e || e.target.id === 'modal-checkout') {
+                const modal = document.getElementById('modal-checkout');
+                if (modal) modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleDeliveryChange() {
+            const type = document.getElementById('delivery-type').value;
+            const locationSection = document.getElementById('location-section');
             
-            btns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const theme = btn.getAttribute('data-theme');
-                    document.body.setAttribute('data-theme', theme);
-                    localStorage.setItem('yogurt-theme', theme);
+            if (type === 'delivery') {
+                if (locationSection) locationSection.classList.add('active');
+                if (userLocation && userLocation.lat) {
+                    calculateDeliveryCost(userLocation.lat, userLocation.lng);
+                } else if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        pos => calculateDeliveryCost(pos.coords.latitude, pos.coords.longitude),
+                        () => { deliveryCost = 8000; updateDeliveryDisplay(); }
+                    );
+                }
+            } else {
+                if (locationSection) locationSection.classList.remove('active');
+                deliveryCost = 0;
+                updateDeliveryDisplay();
+            }
+        }
+
+        function calculateDeliveryCost(lat, lng) {
+            const dist = calculateDistance(CONFIG.STORE_LAT, CONFIG.STORE_LNG, lat, lng);
+            let rate = CONFIG.DELIVERY.zone3;
+            if (dist <= CONFIG.DELIVERY.zone1.maxKm) rate = CONFIG.DELIVERY.zone1;
+            else if (dist <= CONFIG.DELIVERY.zone2.maxKm) rate = CONFIG.DELIVERY.zone2;
+            
+            deliveryCost = rate.price;
+            userLocation = { ...userLocation, lat, lng, distance: dist };
+            updateDeliveryDisplay();
+            
+            const summaryDelivery = document.getElementById('summary-delivery');
+            if (summaryDelivery) {
+                summaryDelivery.innerHTML = `Gs. ${deliveryCost.toLocaleString('es-PY')} <small style="color: #666">(${rate.label}, ${dist.toFixed(1)}km)</small>`;
+            }
+        }
+
+        function updateDeliveryDisplay() {
+            const summaryDelivery = document.getElementById('summary-delivery');
+            if (summaryDelivery) {
+                summaryDelivery.textContent = deliveryCost === 0 ? 'Gratis' : `Gs. ${deliveryCost.toLocaleString('es-PY')}`;
+            }
+            updateCart();
+        }
+
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        // ==========================================
+        // UBICACIÓN
+        // ==========================================
+        function switchTab(tab, el) {
+            currentLocationTab = tab;
+            document.querySelectorAll('.location-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.location-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById(`panel-${tab}`);
+            if (panel) panel.classList.add('active');
+        }
+
+        function getGPSLocation() {
+            if (!navigator.geolocation) {
+                alert('Tu navegador no soporta geolocalización');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                userLocation = { lat, lng, address: `${lat}, ${lng}` };
+                const gpsAddress = document.getElementById('gps-address');
+                if (gpsAddress) gpsAddress.textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                const gpsCoords = document.getElementById('gps-coords');
+                if (gpsCoords) gpsCoords.textContent = `Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                const gpsInfo = document.getElementById('gps-info');
+                if (gpsInfo) gpsInfo.classList.add('active');
+                calculateDeliveryCost(lat, lng);
+            }, () => {
+                alert('No se pudo obtener la ubicación');
+            });
+        }
+
+        function copyGPSLocation() {
+            if (!userLocation) return;
+            const text = `${userLocation.address}\nCoordenadas: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}`;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Dirección copiada');
+            });
+        }
+
+        // ==========================================
+        // PAGO
+        // ==========================================
+        function selectPayment(method) {
+            currentPayment = method;
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            const payOption = document.getElementById(`pay-${method}`);
+            if (payOption) payOption.classList.add('selected');
+            
+            const transferSection = document.getElementById('transfer-section');
+            if (transferSection) transferSection.classList.toggle('active', method === 'transfer');
+            
+            const cashSection = document.getElementById('cash-section');
+            if (cashSection) cashSection.classList.toggle('active', method === 'cash');
+        }
+
+        function calculateChange() {
+            const amount = parseInt(document.getElementById('cash-amount').value) || 0;
+            const total = [...CATALOG.con, ...CATALOG.sin].reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost;
+            const change = amount - total;
+            const display = document.getElementById('change-display');
+            if (!display) return;
+            
+            if (amount === 0) {
+                display.style.display = 'none';
+                return;
+            }
+            
+            display.style.display = 'block';
+            if (change < 0) {
+                display.className = 'vuelto-box error';
+                display.textContent = `Faltan Gs. ${Math.abs(change).toLocaleString('es-PY')}`;
+            } else {
+                display.className = 'vuelto-box ok';
+                display.textContent = `Vuelto: Gs. ${change.toLocaleString('es-PY')}`;
+            }
+        }
+
+        function copyAlias() {
+            navigator.clipboard.writeText(CONFIG.ALIAS).then(() => {
+                const box = document.querySelector('.alias-box');
+                if (box) {
+                    const original = box.textContent;
+                    box.textContent = '¡COPIADO!';
+                    setTimeout(() => box.textContent = original, 1500);
+                }
+            });
+        }
+
+        // ==========================================
+        // CONFIRMAR PEDIDO
+        // ==========================================
+        async function confirmOrder() {
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
+            const deliveryType = document.getElementById('delivery-type').value;
+            
+            if (!name) { alert('Ingresá tu nombre'); return; }
+            if (!phone) { alert('Ingresá tu WhatsApp'); return; }
+            
+            let address = '';
+            if (deliveryType === 'delivery') {
+                if (currentLocationTab === 'gps') {
+                    if (!userLocation || !userLocation.address) {
+                        alert('Primero obtené tu ubicación con GPS');
+                        return;
+                    }
+                    address = userLocation.address;
+                } else if (currentLocationTab === 'maps') {
+                    address = document.getElementById('maps-link').value.trim();
+                    if (!address) { alert('Pegá el enlace de Google Maps o la dirección'); return; }
+                }
+            } else {
+                address = 'Retiro en local - Yogurt Alma';
+            }
+            
+            if (currentPayment === 'cash') {
+                const amount = parseInt(document.getElementById('cash-amount').value) || 0;
+                const total = [...CATALOG.con, ...CATALOG.sin].reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost;
+                if (amount < total) { alert('El monto es insuficiente'); return; }
+            }
+            
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) loadingScreen.classList.add('active');
+            
+            const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
+            const order = {
+                id: 'YA-' + Date.now().toString().slice(-6),
+                timestamp: new Date().toISOString(),
+                customer: { name, phone },
+                items: items.map(p => ({ name: p.name, qty: cart[p.id], price: p.price })),
+                totals: {
+                    subtotal: items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0),
+                    delivery: deliveryCost,
+                    total: items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost
+                },
+                delivery: {
+                    type: deliveryType,
+                    address: address,
+                    coords: userLocation ? `${userLocation.lat},${userLocation.lng}` : ''
+                },
+                payment: { method: currentPayment, alias: currentPayment === 'transfer' ? CONFIG.ALIAS : null }
+            };
+            
+            const message = generateSecureMessage(order);
+            const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(message)}`;
+            
+            try {
+                await fetch(CONFIG.GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(order)
                 });
+            } catch (e) {}
+            
+            setTimeout(() => {
+                if (loadingScreen) loadingScreen.classList.remove('active');
+                const successScreen = document.getElementById('success-screen');
+                if (successScreen) successScreen.classList.add('active');
+                
+                const whatsappBtn = document.getElementById('whatsapp-btn');
+                if (whatsappBtn) whatsappBtn.href = whatsappUrl;
+                
+                const successMsg = document.getElementById('success-message');
+                if (successMsg) {
+                    successMsg.textContent = currentPayment === 'transfer' 
+                        ? `Tu pedido está pendiente de pago.\n\nAlias: ${CONFIG.ALIAS}\nMonto: Gs. ${order.totals.total.toLocaleString('es-PY')}\n\nUna vez realizada la transferencia, envianos el comprobante por WhatsApp.`
+                        : 'Tu pedido está confirmado. Te contactaremos cuando esté listo.';
+                }
+            }, 1500);
+        }
+
+        function generateSecureMessage(order) {
+            const lines = [
+                '🥛 *YOGURT ALMA - PEDIDO OFICIAL*',
+                '',
+                `*N° Pedido:* ${order.id}`,
+                `*Fecha:* ${new Date().toLocaleString('es-PY')}`,
+                '',
+                '*CLIENTE:*',
+                `Nombre: ${order.customer.name}`,
+                `Tel: ${order.customer.phone}`,
+                '',
+                '*PRODUCTOS:*'
+            ];
+            
+            order.items.forEach(item => {
+                lines.push(`• ${item.qty}x ${item.name}`);
+                lines.push(`  Gs. ${(item.qty * item.price).toLocaleString('es-PY')}`);
+            });
+            
+            lines.push('');
+            lines.push('*TOTALES:*');
+            lines.push(`Subtotal: Gs. ${order.totals.subtotal.toLocaleString('es-PY')}`);
+            if (order.totals.delivery > 0) {
+                lines.push(`Delivery: Gs. ${order.totals.delivery.toLocaleString('es-PY')}`);
+            }
+            lines.push(`*TOTAL A PAGAR: Gs. ${order.totals.total.toLocaleString('es-PY')}*`);
+            lines.push('');
+            
+            lines.push('*ENTREGA:*');
+            lines.push(`Tipo: ${order.delivery.type === 'pickup' ? 'Retiro en local' : 'Delivery'}`);
+            lines.push(`Dirección: ${order.delivery.address}`);
+            if (order.delivery.coords) {
+                lines.push(`Maps: https://maps.google.com/?q=${order.delivery.coords}`);
+            }
+            lines.push('');
+            
+            lines.push('*PAGO:*');
+            if (order.payment.method === 'transfer') {
+                lines.push(`Método: Transferencia`);
+                lines.push(`Alias: ${order.payment.alias}`);
+                lines.push(`Estado: PENDIENTE (esperando comprobante)`);
+            } else {
+                lines.push(`Método: Efectivo`);
+                const amount = document.getElementById('cash-amount').value;
+                const change = parseInt(amount) - order.totals.total;
+                lines.push(`Paga con: Gs. ${parseInt(amount).toLocaleString('es-PY')}`);
+                lines.push(`Vuelto: Gs. ${change.toLocaleString('es-PY')}`);
+            }
+            
+            lines.push('');
+            lines.push('✅ Pedido generado automáticamente');
+            lines.push('📍 Por favor no modifiques este mensaje');
+            
+            return lines.join('\n');
+        }
+
+        function resetOrder() {
+            location.reload();
+        }
+
+        // ==========================================
+        // SLIDER HERO
+        // ==========================================
+        let sliderInterval;
+        let currentSlide = 0;
+
+        async function initSlider() {
+            const container = document.getElementById('hero-slider');
+            const loading = document.getElementById('slider-loading');
+            const dotsContainer = document.getElementById('slider-dots');
+            if (!container || !loading || !dotsContainer) return;
+            
+            const encodedPath = encodeURIComponent(CONFIG.GITHUB.PATHS.slider);
+            const url = `https://api.github.com/repos/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/contents/${encodedPath}?ref=${CONFIG.GITHUB.BRANCH}`;
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error();
+                const files = await response.json();
+                const images = files.filter(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i));
+                
+                if (images.length === 0) throw new Error();
+                
+                container.innerHTML = '';
+                images.forEach((img, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = `slide ${index === 0 ? 'active' : ''}`;
+                    slide.style.backgroundImage = `url('${img.download_url}')`;
+                    container.appendChild(slide);
+                });
+                
+                dotsContainer.innerHTML = '';
+                images.forEach((_, i) => {
+                    const dot = document.createElement('span');
+                    dot.className = `dot ${i === 0 ? 'active' : ''}`;
+                    dot.onclick = () => goToSlide(i);
+                    dotsContainer.appendChild(dot);
+                });
+                
+                loading.style.display = 'none';
+                startSliderAuto();
+            } catch (e) {
+                console.warn('Error cargando slider, usando imagen por defecto');
+                container.innerHTML = `<div class="slide active" style="background-image: url('https://via.placeholder.com/1920x1080/2C1810/FAF7F2?text=Yogurt+Alma');"></div>`;
+                loading.style.display = 'none';
+            }
+        }
+        
+        function startSliderAuto() {
+            if (sliderInterval) clearInterval(sliderInterval);
+            sliderInterval = setInterval(() => {
+                const slides = document.querySelectorAll('.slide');
+                const dots = document.querySelectorAll('.dot');
+                if (slides.length === 0) return;
+                slides[currentSlide].classList.remove('active');
+                dots[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }, 5000);
+        }
+        
+        function goToSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            if (slides.length === 0) return;
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            clearInterval(sliderInterval);
+            startSliderAuto();
+        }
+
+        // ==========================================
+        // UTILIDADES
+        // ==========================================
+        function scrollToProducts() {
+            document.getElementById('products-con').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        }
+
+        function setupAdminAccess() {
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    const adminPanel = document.getElementById('admin-panel');
+                    if (adminPanel) adminPanel.classList.toggle('visible');
+                }
             });
         }
 
@@ -450,48 +880,34 @@
             URL.revokeObjectURL(url);
         }
 
-        function scrollToProducts() {
-            document.getElementById('products-con').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function initScrollAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('visible');
+        function initThemeSwitcher() {
+            const btns = document.querySelectorAll('.theme-btn');
+            const savedTheme = localStorage.getItem('yogurt-theme') || 'default';
+            document.body.setAttribute('data-theme', savedTheme);
+            
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.getAttribute('data-theme');
+                    document.body.setAttribute('data-theme', theme);
+                    localStorage.setItem('yogurt-theme', theme);
                 });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-        }
-
-        function setupAdminAccess() {
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                    const adminPanel = document.getElementById('admin-panel');
-                    if (adminPanel) adminPanel.classList.toggle('visible');
-                }
             });
         }
 
         // ==========================================
-        // INICIALIZACIÓN PRINCIPAL
+        // INICIALIZACIÓN
         // ==========================================
         document.addEventListener('DOMContentLoaded', async () => {
             await loadProductsFromJSON();
-            await loadLogos(); // función original que carga logos desde GitHub
-            await initSlider(); // función original
+            await loadLogos();
+            await initSlider();
             initThemeSwitcher();
             initScrollAnimations();
             setupAdminAccess();
-            
-            // Ocultar skeletons
-            document.getElementById('loading-con').style.display = 'none';
-            document.getElementById('loading-sin').style.display = 'none';
-            document.getElementById('grid-con').classList.remove('hidden');
-            document.getElementById('grid-sin').classList.remove('hidden');
         });
     </script>
 
-    <!-- Google Maps API (opcional) -->
+    <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGW38f4I-sjvJ9TWKBpsJGF0WM1tOCrK0&libraries=places&language=es" async defer></script>
 </body>
 </html>
