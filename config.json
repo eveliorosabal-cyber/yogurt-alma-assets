@@ -1,0 +1,42 @@
+{
+  "hero": {
+    "badge": "Hecho con Alma desde 2020",
+    "title": "El Auténtico Yogurt Griego Artesanal",
+    "subtitle": "Preparado tradicionalmente en pequeños lotes, con leche seleccionada y cultivo probiótico vivo. Directo de nuestra cocina a tu mesa.",
+    "button": "Ver Productos Disponibles Hoy"
+  },
+  "store": {
+    "name": "Yogurt Alma",
+    "whatsapp": "595994883355",
+    "alias": "0994883355",
+    "location": {
+      "lat": -25.2914380,
+      "lng": -57.6451651
+    },
+    "google_sheets_url": "https://script.google.com/macros/s/AKfycbyDIOjlGOFuVosYPlvRVnY9xEPoYxwi7D8koCl6LSBg9URFkhOUxNO1ZXcmDDG82jr1/exec"
+  },
+  "delivery_zones": [
+    { "maxKm": 3, "price": 5000, "label": "Cercana" },
+    { "maxKm": 8, "price": 8000, "label": "Media" },
+    { "maxKm": 15, "price": 12000, "label": "Lejana" }
+  ],
+  "categories": {
+    "order": ["con", "sin"],
+    "names": {
+      "con": "Tradicional",
+      "sin": "Sin Lactosa"
+    },
+    "descriptions": {
+      "con": "Receta clásica con toda la cremosidad y el sabor auténtico del yogurt griego tradicional",
+      "sin": "La misma cremosidad, sin compromisos. Perfecto para quienes buscan una opción digestiva sin perder el sabor"
+    },
+    "logos": {
+      "con": "Logo%20lac.png",
+      "sin": "logo%20sin%20lac.png"
+    },
+    "folders": {
+      "con": "Con lactosa",
+      "sin": "Sin lactosa"
+    }
+  }
+}
