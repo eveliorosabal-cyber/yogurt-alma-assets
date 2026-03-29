@@ -8,6 +8,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Ajustes para videos en slider */
+        .slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(44,24,16,0.3), rgba(44,24,16,0.7));
+            z-index: 1;
+        }
+        .slide.active video {
+            display: block;
+        }
+        .slide video + .hero-content {
+            z-index: 2;
+        }
+    </style>
 </head>
 <body data-theme="default">
     <!-- Theme Switcher -->
@@ -22,59 +46,24 @@
         <button class="btn-admin" onclick="downloadJSONTemplate()">Descargar JSON Productos</button>
     </div>
 
-    <!-- HERO -->
+    <!-- HERO (estructura vacía, se llenará con JSON) -->
     <section class="hero">
         <div class="slider-container" id="hero-slider">
             <div id="slider-loading" style="position: absolute; inset: 0; display: grid; place-items: center; background: rgba(44,24,16,0.8);">
                 <div style="color: white; text-align: center;">
                     <div class="status-icon loading" style="border-color: rgba(255,255,255,0.3); border-top-color: white; margin: 0 auto 1rem;"></div>
-                    <p>Cargando imágenes...</p>
+                    <p>Cargando imágenes y videos...</p>
                 </div>
             </div>
         </div>
-        
-        <div class="hero-content">
-            <div class="hero-badge">Hecho con Alma desde 2020</div>
-            <h1 class="hero-title">El Auténtico Yogurt Griego Artesanal</h1>
-            <p class="hero-subtitle">Preparado tradicionalmente en pequeños lotes, con leche seleccionada y cultivo probiótico vivo. Directo de nuestra cocina a tu mesa.</p>
-            <button class="btn-primary" onclick="scrollToProducts()">
-                Ver Productos Disponibles Hoy
-            </button>
+        <div class="hero-content" id="hero-content">
+            <!-- contenido inyectado dinámicamente -->
         </div>
-        
         <div class="slider-dots" id="slider-dots"></div>
     </section>
 
-    <!-- PRODUCTOS CON LACTOSA -->
-    <section class="section" id="products-con">
-        <div class="section-header fade-up">
-            <img src="" alt="Yogurt con Lactosa" class="section-logo" id="logo-con">
-            <h2 class="section-title">Yogurt Griego Tradicional</h2>
-            <p class="section-subtitle">Receta clásica con toda la cremosidad y el sabor auténtico del yogurt griego tradicional</p>
-        </div>
-        <div class="loading-grid" id="loading-con">
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-        </div>
-        <div class="products-grid hidden" id="grid-con"></div>
-    </section>
-
-    <!-- PRODUCTOS SIN LACTOSA -->
-    <section class="section section-alt" id="products-sin">
-        <div class="section-header fade-up">
-            <img src="" alt="Yogurt Sin Lactosa" class="section-logo" id="logo-sin">
-            <h2 class="section-title">Yogurt Griego Sin Lactosa</h2>
-            <p class="section-subtitle">La misma cremosidad, sin compromisos. Perfecto para quienes buscan una opción digestiva sin perder el sabor</p>
-        </div>
-        <div class="loading-grid" id="loading-sin">
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-        </div>
-        <div class="products-grid hidden" id="grid-sin"></div>
-        <div class="spacer"></div>
-    </section>
+    <!-- Contenedor dinámico para categorías -->
+    <div id="categories-container"></div>
 
     <!-- CARRITO -->
     <div class="cart-float" id="cart-float">
@@ -94,129 +83,8 @@
                 <h2 class="modal-title">Finalizar Pedido</h2>
                 <button class="btn-close" onclick="closeCheckout()">×</button>
             </div>
-            
-            <div class="modal-body">
-                <!-- RESUMEN -->
-                <div class="order-summary">
-                    <h3 class="summary-title">Resumen de tu orden</h3>
-                    <div id="summary-items"></div>
-                    <div class="summary-item" style="margin-top: 0.5rem;">
-                        <span>Subtotal</span>
-                        <span>Gs. <span id="summary-subtotal">0</span></span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Delivery</span>
-                        <span id="summary-delivery">Gs. 0</span>
-                    </div>
-                    <div class="summary-total">
-                        <span>Total</span>
-                        <span>Gs. <span id="summary-total">0</span></span>
-                    </div>
-                </div>
-
-                <!-- DATOS -->
-                <div class="form-group">
-                    <label class="form-label">Nombre completo *</label>
-                    <input type="text" class="form-input" id="client-name" placeholder="Ej: María Fernández">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">WhatsApp *</label>
-                    <input type="tel" class="form-input" id="client-phone" placeholder="Ej: 0981 123 456">
-                </div>
-
-                <!-- ENTREGA -->
-                <div class="form-group">
-                    <label class="form-label">Tipo de entrega</label>
-                    <select class="form-select" id="delivery-type" onchange="handleDeliveryChange()">
-                        <option value="pickup">Retiro en local (Gratis)</option>
-                        <option value="delivery">Delivery a domicilio</option>
-                    </select>
-                </div>
-
-                <!-- UBICACIÓN -->
-                <div id="location-section" class="conditional-section">
-                    <div class="form-group">
-                        <label class="form-label">Indicar ubicación para delivery *</label>
-                        
-                        <div class="location-tabs">
-                            <button class="location-tab active" onclick="switchTab('gps', this)">Buscar dirección (GPS)</button>
-                            <button class="location-tab" onclick="switchTab('maps', this)">Google Maps</button>
-                        </div>
-
-                        <!-- Panel GPS -->
-                        <div id="panel-gps" class="location-panel active">
-                            <button class="btn-gps" onclick="getGPSLocation()">📍 Obtener mi ubicación actual</button>
-                            <div class="gps-info" id="gps-info">
-                                <strong>Dirección aproximada:</strong>
-                                <p id="gps-address"></p>
-                                <p id="gps-coords" style="font-size:0.85rem; color:#666;"></p>
-                                <button class="copy-location-btn" onclick="copyGPSLocation()">Copiar dirección</button>
-                            </div>
-                        </div>
-
-                        <!-- Panel Maps -->
-                        <div id="panel-maps" class="location-panel">
-                            <div class="maps-help">
-                                <strong>Compartí tu ubicación exacta:</strong>
-                                <ol style="margin:0.5rem 0 0 1.2rem;">
-                                    <li>Tocá el botón de abajo para abrir Google Maps</li>
-                                    <li>Mantené presionado el punto exacto en el mapa</li>
-                                    <li>Seleccioná "Compartir" y copiá el enlace</li>
-                                    <li>Pegalo en el campo de abajo</li>
-                                </ol>
-                            </div>
-                            <a href="https://maps.google.com" target="_blank" class="btn-maps">
-                                Abrir Google Maps
-                            </a>
-                            <textarea class="form-textarea" id="maps-link" placeholder="Pegá aquí el enlace de Google Maps o la dirección completa"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGO -->
-                <div class="form-group">
-                    <label class="form-label">Método de pago</label>
-                    <div class="payment-grid">
-                        <div class="payment-option selected" onclick="selectPayment('cash')" id="pay-cash">
-                            <div class="payment-label">Efectivo</div>
-                            <div class="payment-sublabel">Pago al recibir</div>
-                        </div>
-                        <div class="payment-option" onclick="selectPayment('transfer')" id="pay-transfer">
-                            <div class="payment-label">Transferencia</div>
-                            <div class="payment-sublabel">Alias: 0994883355</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Transferencia -->
-                <div id="transfer-section" class="conditional-section">
-                    <div class="transfer-info">
-                        <p style="margin-bottom: 0.5rem; font-weight: 600;">Realizá la transferencia al siguiente alias:</p>
-                        <div class="alias-box" onclick="copyAlias()">0994883355</div>
-                        <p style="font-size: 0.875rem; color: #666; margin-bottom: 1rem;">
-                            Tocá el alias para copiarlo
-                        </p>
-                        <div style="background: white; padding: 1rem; border-radius: 8px; text-align: left; font-size: 0.9rem;">
-                            <strong>Banco:</strong> Tigo Money / Bancard<br>
-                            <strong>Titular:</strong> Yogurt Alma<br>
-                            <strong>Monto:</strong> <span id="transfer-amount">Gs. 0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Efectivo -->
-                <div id="cash-section" class="conditional-section active">
-                    <div class="form-group">
-                        <label class="form-label">¿Con cuánto pagás? (para calcular vuelto)</label>
-                        <input type="number" class="form-input" id="cash-amount" placeholder="Ej: 50000" oninput="calculateChange()">
-                        <div class="vuelto-box" id="change-display"></div>
-                    </div>
-                </div>
-
-                <button class="btn-confirm" id="btn-confirm" onclick="confirmOrder()">
-                    Confirmar Pedido
-                </button>
+            <div class="modal-body" id="modal-body">
+                <!-- se llena dinámicamente -->
             </div>
         </div>
     </div>
@@ -227,147 +95,241 @@
         <h2 class="status-title">Procesando tu pedido</h2>
         <p class="status-text">Estamos preparando tu orden...</p>
     </div>
-
     <div class="status-screen" id="success-screen">
         <div class="status-icon success">✓</div>
         <h2 class="status-title">¡Pedido confirmado!</h2>
         <p class="status-text" id="success-message"></p>
-        <a href="#" class="whatsapp-btn" id="whatsapp-btn" target="_blank">
-            Enviar pedido por WhatsApp
-        </a>
-        <button onclick="resetOrder()" style="margin-top: 1.5rem; background: none; border: none; color: var(--color-secondary); text-decoration: underline; cursor: pointer;">
-            Hacer otro pedido
-        </button>
+        <a href="#" class="whatsapp-btn" id="whatsapp-btn" target="_blank">Enviar pedido por WhatsApp</a>
+        <button onclick="resetOrder()" style="margin-top: 1.5rem; background: none; border: none; color: var(--color-secondary); text-decoration: underline; cursor: pointer;">Hacer otro pedido</button>
     </div>
 
     <script>
         // ==========================================
-        // CONFIGURACIÓN
+        // CONFIGURACIÓN GLOBAL
         // ==========================================
-        const CONFIG = {
-            GITHUB: {
-                USER: 'eveliorosabal-cyber',
-                REPO: 'yogurt-alma-assets',
-                BRANCH: 'main',
-                PATHS: {
-                    slider: 'images/slider',
-                    productsCon: 'images/productos del dia/Con lactosa',
-                    productsSin: 'images/productos del dia/Sin lactosa',
-                    logos: 'images/logos',
-                    productsJSON: 'productos.json'
-                }
-            },
-            WHATSAPP: '595994883355',
-            ALIAS: '0994883355',
-            STORE_LAT: -25.2914380,
-            STORE_LNG: -57.6451651,
-            DELIVERY: {
-                zone1: { maxKm: 3, price: 5000, label: 'Cercana' },
-                zone2: { maxKm: 8, price: 8000, label: 'Media' },
-                zone3: { maxKm: 15, price: 12000, label: 'Lejana' }
-            },
-            GOOGLE_SHEETS_URL: 'https://script.google.com/macros/s/AKfycbyDIOjlGOFuVosYPlvRVnY9xEPoYxwi7D8koCl6LSBg9URFkhOUxNO1ZXcmDDG82jr1/exec'
-        };
-
-        // ==========================================
-        // DATOS GLOBALES
-        // ==========================================
-        let CATALOG = { con: [], sin: [] };
+        let CONFIG = {};      // se llena desde config.json
+        let CATALOG = {};     // productos agrupados por categoría
         let cart = {};
         let deliveryCost = 0;
         let currentPayment = 'cash';
         let currentLocationTab = 'gps';
         let userLocation = null;
 
+        // Elementos dinámicos
+        const categoriesContainer = document.getElementById('categories-container');
+        const heroContent = document.getElementById('hero-content');
+        const modalBody = document.getElementById('modal-body');
+
         // ==========================================
-        // FUNCIÓN PARA CARGAR LOGOS
+        // FUNCIONES DE CARGA DE DATOS
         // ==========================================
-        async function loadLogos() {
-            const logoCon = document.getElementById('logo-con');
-            const logoSin = document.getElementById('logo-sin');
-            
-            const base = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/`;
-            const urlCon = base + 'images/logos/Logo%20lac.png';
-            const urlSin = base + 'images/logos/logo%20sin%20lac.png';
-            
-            if (logoCon) {
-                logoCon.src = urlCon;
-                logoCon.onerror = () => console.error('Error cargando logo con lactosa');
+        async function loadConfig() {
+            const base = `https://raw.githubusercontent.com/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/${CONFIG_GITHUB.BRANCH}/`;
+            const url = base + 'config.json?t=' + Date.now();
+            try {
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                CONFIG = await resp.json();
+                console.log('Config cargada:', CONFIG);
+            } catch (e) {
+                console.error('Error cargando config.json:', e);
+                alert('No se pudo cargar la configuración. Revisa tu conexión.');
+                throw e;
             }
-            if (logoSin) {
-                logoSin.src = urlSin;
-                logoSin.onerror = () => console.error('Error cargando logo sin lactosa');
+        }
+
+        async function loadProductsFromJSON() {
+            const base = `https://raw.githubusercontent.com/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/${CONFIG_GITHUB.BRANCH}/`;
+            const url = base + 'productos.json?t=' + Date.now();
+            try {
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const productos = await resp.json();
+                // Agrupar por categoría
+                CATALOG = {};
+                for (const p of productos) {
+                    const cat = p.category;
+                    if (!CATALOG[cat]) CATALOG[cat] = [];
+                    // Construir URL de imagen
+                    const folderKey = CONFIG.categories.folders[cat];
+                    if (folderKey) {
+                        p.image = `${base}images/productos del dia/${folderKey}/${encodeURIComponent(p.imageFile)}`;
+                    } else {
+                        p.image = ''; // sin imagen
+                    }
+                    CATALOG[cat].push(p);
+                }
+                console.log('Productos cargados:', CATALOG);
+            } catch (e) {
+                console.error('Error cargando productos.json:', e);
+                alert('No se pudo cargar la lista de productos.');
+                throw e;
             }
         }
 
         // ==========================================
-        // CARGAR PRODUCTOS DESDE JSON
+        // SLIDER CON IMÁGENES Y VIDEOS
         // ==========================================
-        async function loadProductsFromJSON() {
-            const base = `https://raw.githubusercontent.com/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/${CONFIG.GITHUB.BRANCH}/`;
-            const url = base + CONFIG.GITHUB.PATHS.productsJSON + '?t=' + Date.now();
-            
+        let sliderInterval;
+        let currentSlide = 0;
+        let sliderItems = []; // almacena { type: 'image', url } o { type: 'video', url }
+
+        async function initSlider() {
+            const container = document.getElementById('hero-slider');
+            const loading = document.getElementById('slider-loading');
+            const dotsContainer = document.getElementById('slider-dots');
+            if (!container || !loading || !dotsContainer) return;
+
+            const base = `https://raw.githubusercontent.com/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/${CONFIG_GITHUB.BRANCH}/`;
+            const folderPath = CONFIG_GITHUB.PATHS.slider;
+            const encodedPath = encodeURIComponent(folderPath);
+            const url = `https://api.github.com/repos/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/contents/${encodedPath}?ref=${CONFIG_GITHUB.BRANCH}`;
+
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const productos = await response.json();
-                
-                CATALOG.con = productos.filter(p => p.category === 'con');
-                CATALOG.sin = productos.filter(p => p.category === 'sin');
-                
-                // Construir URLs de imágenes
-                CATALOG.con.forEach(p => {
-                    p.image = `${base}${CONFIG.GITHUB.PATHS.productsCon}/${encodeURIComponent(p.imageFile)}`;
+                const files = await response.json();
+                // Filtrar imágenes y videos
+                const mediaFiles = files.filter(file => {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    return ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'webm', 'mov'].includes(ext);
                 });
-                CATALOG.sin.forEach(p => {
-                    p.image = `${base}${CONFIG.GITHUB.PATHS.productsSin}/${encodeURIComponent(p.imageFile)}`;
+                if (mediaFiles.length === 0) throw new Error('No media files');
+
+                // Construir items
+                sliderItems = mediaFiles.map(file => {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    const isVideo = ['mp4', 'webm', 'mov'].includes(ext);
+                    return {
+                        type: isVideo ? 'video' : 'image',
+                        url: file.download_url
+                    };
                 });
-                
-                // Inicializar carrito
-                cart = {};
-                [...CATALOG.con, ...CATALOG.sin].forEach(p => cart[p.id] = 0);
-                
-                renderProducts();
+
+                // Limpiar container y agregar slides
+                container.innerHTML = '';
+                sliderItems.forEach((item, idx) => {
+                    const slideDiv = document.createElement('div');
+                    slideDiv.className = `slide ${idx === 0 ? 'active' : ''}`;
+                    if (item.type === 'image') {
+                        slideDiv.style.backgroundImage = `url('${item.url}')`;
+                        slideDiv.style.backgroundSize = 'cover';
+                        slideDiv.style.backgroundPosition = 'center';
+                    } else {
+                        const video = document.createElement('video');
+                        video.src = item.url;
+                        video.autoplay = true;
+                        video.muted = true;
+                        video.loop = true;
+                        video.playsInline = true;
+                        video.style.width = '100%';
+                        video.style.height = '100%';
+                        video.style.objectFit = 'cover';
+                        slideDiv.appendChild(video);
+                    }
+                    container.appendChild(slideDiv);
+                });
+
+                // Dots
+                dotsContainer.innerHTML = '';
+                sliderItems.forEach((_, i) => {
+                    const dot = document.createElement('span');
+                    dot.className = `dot ${i === 0 ? 'active' : ''}`;
+                    dot.onclick = () => goToSlide(i);
+                    dotsContainer.appendChild(dot);
+                });
+
+                loading.style.display = 'none';
+                startSliderAuto();
             } catch (e) {
-                console.error('Error cargando productos.json:', e);
-                // Mostrar mensaje de error en las secciones
-                document.getElementById('grid-con').innerHTML = '<div class="error-message">Error al cargar productos. Por favor recarga la página.</div>';
-                document.getElementById('grid-sin').innerHTML = '<div class="error-message">Error al cargar productos. Por favor recarga la página.</div>';
-                // Ocultar skeletons
-                document.getElementById('loading-con').style.display = 'none';
-                document.getElementById('loading-sin').style.display = 'none';
-                document.getElementById('grid-con').classList.remove('hidden');
-                document.getElementById('grid-sin').classList.remove('hidden');
+                console.warn('Error cargando slider, usando imagen por defecto');
+                container.innerHTML = `<div class="slide active" style="background-image: url('https://via.placeholder.com/1920x1080/2C1810/FAF7F2?text=Yogurt+Alma');"></div>`;
+                loading.style.display = 'none';
             }
         }
 
-        function renderProducts() {
-            const gridCon = document.getElementById('grid-con');
-            const gridSin = document.getElementById('grid-sin');
-            
-            if (gridCon) {
-                gridCon.innerHTML = '';
-                if (CATALOG.con.length === 0) {
-                    gridCon.innerHTML = '<div class="error-message">No hay productos disponibles en este momento.</div>';
-                } else {
-                    CATALOG.con.forEach(prod => gridCon.appendChild(createProductCard(prod)));
+        function startSliderAuto() {
+            if (sliderInterval) clearInterval(sliderInterval);
+            sliderInterval = setInterval(() => {
+                const slides = document.querySelectorAll('.slide');
+                const dots = document.querySelectorAll('.dot');
+                if (slides.length === 0) return;
+                slides[currentSlide].classList.remove('active');
+                dots[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+                dots[currentSlide].classList.add('active');
+            }, 5000);
+        }
+
+        function goToSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            if (slides.length === 0) return;
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            clearInterval(sliderInterval);
+            startSliderAuto();
+        }
+
+        // ==========================================
+        // RENDERIZADO DE PÁGINA (hero + categorías)
+        // ==========================================
+        function renderHero() {
+            if (!CONFIG.hero) return;
+            heroContent.innerHTML = `
+                <div class="hero-badge">${CONFIG.hero.badge}</div>
+                <h1 class="hero-title">${CONFIG.hero.title}</h1>
+                <p class="hero-subtitle">${CONFIG.hero.subtitle}</p>
+                <button class="btn-primary" onclick="scrollToProducts()">${CONFIG.hero.button}</button>
+            `;
+        }
+
+        function renderCategories() {
+            if (!CATALOG) return;
+            const categoriesOrder = CONFIG.categories.order;
+            categoriesContainer.innerHTML = '';
+            for (const catKey of categoriesOrder) {
+                const products = CATALOG[catKey];
+                if (!products || products.length === 0) continue;
+                const title = CONFIG.categories.names[catKey] || catKey;
+                const description = CONFIG.categories.descriptions[catKey] || '';
+                const logoFile = CONFIG.categories.logos[catKey];
+                let logoHtml = '';
+                if (logoFile) {
+                    const base = `https://raw.githubusercontent.com/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/${CONFIG_GITHUB.BRANCH}/`;
+                    const logoUrl = base + `images/logos/${encodeURIComponent(logoFile)}`;
+                    logoHtml = `<img src="${logoUrl}" alt="${title}" class="section-logo" onerror="this.style.display='none'">`;
+                }
+                const section = document.createElement('section');
+                section.className = 'section';
+                section.id = `cat-${catKey}`;
+                section.innerHTML = `
+                    <div class="section-header fade-up">
+                        ${logoHtml}
+                        <h2 class="section-title">${title}</h2>
+                        <p class="section-subtitle">${description}</p>
+                    </div>
+                    <div class="loading-grid" id="loading-${catKey}">
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                    </div>
+                    <div class="products-grid hidden" id="grid-${catKey}"></div>
+                `;
+                categoriesContainer.appendChild(section);
+                // Llenar productos
+                const grid = document.getElementById(`grid-${catKey}`);
+                const loadingDiv = document.getElementById(`loading-${catKey}`);
+                if (grid && loadingDiv) {
+                    products.forEach(prod => grid.appendChild(createProductCard(prod)));
+                    loadingDiv.style.display = 'none';
+                    grid.classList.remove('hidden');
                 }
             }
-            
-            if (gridSin) {
-                gridSin.innerHTML = '';
-                if (CATALOG.sin.length === 0) {
-                    gridSin.innerHTML = '<div class="error-message">No hay productos disponibles en este momento.</div>';
-                } else {
-                    CATALOG.sin.forEach(prod => gridSin.appendChild(createProductCard(prod)));
-                }
-            }
-            
-            // Ocultar skeletons y mostrar grids
-            document.getElementById('loading-con').style.display = 'none';
-            document.getElementById('loading-sin').style.display = 'none';
-            document.getElementById('grid-con').classList.remove('hidden');
-            document.getElementById('grid-sin').classList.remove('hidden');
         }
 
         function createProductCard(product) {
@@ -376,7 +338,7 @@
             card.innerHTML = `
                 <div class="product-image-wrapper">
                     <img src="${product.image}" alt="${product.name}" class="product-image" 
-                         onerror="this.src='https://via.placeholder.com/400x300/F5F0E8/2C1810?text=${encodeURIComponent(product.name)}'">
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23F5F0E8\'/%3E%3Ctext x=\'50%%\' y=\'50%%\' font-size=\'16\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%238B6F47\'%3E${encodeURIComponent(product.name)}%3C/text%3E%3C/svg%3E'">
                     ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
                 </div>
                 <div class="product-info">
@@ -400,7 +362,7 @@
         }
 
         // ==========================================
-        // CARRITO
+        // CARRITO Y CHECKOUT (igual que antes, pero usando CONFIG)
         // ==========================================
         function updateQuantity(productId, delta) {
             const newQty = cart[productId] + delta;
@@ -413,27 +375,28 @@
         }
 
         function updateCart() {
-            const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
+            const allProducts = Object.values(CATALOG).flat();
+            const items = allProducts.filter(p => cart[p.id] > 0);
             const subtotal = items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0);
             const total = subtotal + deliveryCost;
-            
-            const cartTotalEl = document.getElementById('cart-total');
-            if (cartTotalEl) cartTotalEl.textContent = total.toLocaleString('es-PY');
-            
-            const cartFloat = document.getElementById('cart-float');
-            if (cartFloat) cartFloat.classList.toggle('active', items.length > 0);
-            
+
+            document.getElementById('cart-total').textContent = total.toLocaleString('es-PY');
+            document.getElementById('cart-float').classList.toggle('active', items.length > 0);
+            // actualizar resumen en modal cuando esté abierto
+            if (modalBody && modalBody.children.length) updateCheckoutSummary(subtotal, total);
+        }
+
+        function updateCheckoutSummary(subtotal, total) {
             const summarySubtotal = document.getElementById('summary-subtotal');
             if (summarySubtotal) summarySubtotal.textContent = subtotal.toLocaleString('es-PY');
-            
             const summaryTotal = document.getElementById('summary-total');
             if (summaryTotal) summaryTotal.textContent = total.toLocaleString('es-PY');
-            
             const transferAmount = document.getElementById('transfer-amount');
             if (transferAmount) transferAmount.textContent = 'Gs. ' + total.toLocaleString('es-PY');
-            
             const container = document.getElementById('summary-items');
             if (container) {
+                const allProducts = Object.values(CATALOG).flat();
+                const items = allProducts.filter(p => cart[p.id] > 0);
                 if (items.length === 0) {
                     container.innerHTML = '<p style="color: #999; font-size: 0.9rem;">No hay productos seleccionados</p>';
                 } else {
@@ -447,19 +410,130 @@
             }
         }
 
-        // ==========================================
-        // CHECKOUT
-        // ==========================================
         function openCheckout() {
-            const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
+            const allProducts = Object.values(CATALOG).flat();
+            const items = allProducts.filter(p => cart[p.id] > 0);
             if (items.length === 0) {
                 alert('Agregá productos a tu pedido');
                 return;
             }
             updateCart();
+            // Llenar modal dinámicamente (estructura similar a la original pero con valores de CONFIG)
             const modal = document.getElementById('modal-checkout');
             if (modal) modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+
+            // Si no está lleno, lo llenamos
+            if (modalBody.children.length === 0) {
+                renderCheckoutModal();
+            } else {
+                // Actualizar resumen
+                const subtotal = items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0);
+                const total = subtotal + deliveryCost;
+                updateCheckoutSummary(subtotal, total);
+            }
+        }
+
+        function renderCheckoutModal() {
+            // Generar HTML del modal usando CONFIG
+            const deliveryZonesHtml = CONFIG.delivery_zones.map(z => `<option value="${z.maxKm}">${z.label} (hasta ${z.maxKm}km) - Gs. ${z.price.toLocaleString('es-PY')}</option>`).join('');
+            modalBody.innerHTML = `
+                <div class="order-summary">
+                    <h3 class="summary-title">Resumen de tu orden</h3>
+                    <div id="summary-items"></div>
+                    <div class="summary-item" style="margin-top: 0.5rem;">
+                        <span>Subtotal</span>
+                        <span>Gs. <span id="summary-subtotal">0</span></span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Delivery</span>
+                        <span id="summary-delivery">Gs. 0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>Gs. <span id="summary-total">0</span></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre completo *</label>
+                    <input type="text" class="form-input" id="client-name" placeholder="Ej: María Fernández">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">WhatsApp *</label>
+                    <input type="tel" class="form-input" id="client-phone" placeholder="Ej: 0981 123 456">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de entrega</label>
+                    <select class="form-select" id="delivery-type" onchange="handleDeliveryChange()">
+                        <option value="pickup">Retiro en local (Gratis)</option>
+                        <option value="delivery">Delivery a domicilio</option>
+                    </select>
+                </div>
+                <div id="location-section" class="conditional-section">
+                    <div class="form-group">
+                        <label class="form-label">Indicar ubicación para delivery *</label>
+                        <div class="location-tabs">
+                            <button class="location-tab active" onclick="switchTab('gps', this)">Buscar dirección (GPS)</button>
+                            <button class="location-tab" onclick="switchTab('maps', this)">Google Maps</button>
+                        </div>
+                        <div id="panel-gps" class="location-panel active">
+                            <button class="btn-gps" onclick="getGPSLocation()">📍 Obtener mi ubicación actual</button>
+                            <div class="gps-info" id="gps-info">
+                                <strong>Dirección aproximada:</strong>
+                                <p id="gps-address"></p>
+                                <p id="gps-coords" style="font-size:0.85rem; color:#666;"></p>
+                                <button class="copy-location-btn" onclick="copyGPSLocation()">Copiar dirección</button>
+                            </div>
+                        </div>
+                        <div id="panel-maps" class="location-panel">
+                            <div class="maps-help">
+                                <strong>Compartí tu ubicación exacta:</strong>
+                                <ol style="margin:0.5rem 0 0 1.2rem;">
+                                    <li>Tocá el botón de abajo para abrir Google Maps</li>
+                                    <li>Mantené presionado el punto exacto en el mapa</li>
+                                    <li>Seleccioná "Compartir" y copiá el enlace</li>
+                                    <li>Pegalo en el campo de abajo</li>
+                                </ol>
+                            </div>
+                            <a href="https://maps.google.com" target="_blank" class="btn-maps">Abrir Google Maps</a>
+                            <textarea class="form-textarea" id="maps-link" placeholder="Pegá aquí el enlace de Google Maps o la dirección completa"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Método de pago</label>
+                    <div class="payment-grid">
+                        <div class="payment-option selected" onclick="selectPayment('cash')" id="pay-cash">
+                            <div class="payment-label">Efectivo</div>
+                            <div class="payment-sublabel">Pago al recibir</div>
+                        </div>
+                        <div class="payment-option" onclick="selectPayment('transfer')" id="pay-transfer">
+                            <div class="payment-label">Transferencia</div>
+                            <div class="payment-sublabel">Alias: ${CONFIG.store.alias}</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="transfer-section" class="conditional-section">
+                    <div class="transfer-info">
+                        <p style="margin-bottom: 0.5rem; font-weight: 600;">Realizá la transferencia al siguiente alias:</p>
+                        <div class="alias-box" onclick="copyAlias()">${CONFIG.store.alias}</div>
+                        <p style="font-size: 0.875rem; color: #666; margin-bottom: 1rem;">Tocá el alias para copiarlo</p>
+                        <div style="background: white; padding: 1rem; border-radius: 8px; text-align: left; font-size: 0.9rem;">
+                            <strong>Banco:</strong> Tigo Money / Bancard<br>
+                            <strong>Titular:</strong> ${CONFIG.store.name}<br>
+                            <strong>Monto:</strong> <span id="transfer-amount">Gs. 0</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="cash-section" class="conditional-section active">
+                    <div class="form-group">
+                        <label class="form-label">¿Con cuánto pagás? (para calcular vuelto)</label>
+                        <input type="number" class="form-input" id="cash-amount" placeholder="Ej: 50000" oninput="calculateChange()">
+                        <div class="vuelto-box" id="change-display"></div>
+                    </div>
+                </div>
+                <button class="btn-confirm" id="btn-confirm" onclick="confirmOrder()">Confirmar Pedido</button>
+            `;
         }
 
         function closeCheckout(e) {
@@ -473,34 +547,35 @@
         function handleDeliveryChange() {
             const type = document.getElementById('delivery-type').value;
             const locationSection = document.getElementById('location-section');
-            
             if (type === 'delivery') {
-                if (locationSection) locationSection.classList.add('active');
+                locationSection.classList.add('active');
                 if (userLocation && userLocation.lat) {
                     calculateDeliveryCost(userLocation.lat, userLocation.lng);
                 } else if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         pos => calculateDeliveryCost(pos.coords.latitude, pos.coords.longitude),
-                        () => { deliveryCost = 8000; updateDeliveryDisplay(); }
+                        () => { deliveryCost = CONFIG.delivery_zones[1]?.price || 8000; updateDeliveryDisplay(); }
                     );
                 }
             } else {
-                if (locationSection) locationSection.classList.remove('active');
+                locationSection.classList.remove('active');
                 deliveryCost = 0;
                 updateDeliveryDisplay();
             }
         }
 
         function calculateDeliveryCost(lat, lng) {
-            const dist = calculateDistance(CONFIG.STORE_LAT, CONFIG.STORE_LNG, lat, lng);
-            let rate = CONFIG.DELIVERY.zone3;
-            if (dist <= CONFIG.DELIVERY.zone1.maxKm) rate = CONFIG.DELIVERY.zone1;
-            else if (dist <= CONFIG.DELIVERY.zone2.maxKm) rate = CONFIG.DELIVERY.zone2;
-            
+            const dist = calculateDistance(CONFIG.store.location.lat, CONFIG.store.location.lng, lat, lng);
+            let rate = CONFIG.delivery_zones[CONFIG.delivery_zones.length-1];
+            for (const zone of CONFIG.delivery_zones) {
+                if (dist <= zone.maxKm) {
+                    rate = zone;
+                    break;
+                }
+            }
             deliveryCost = rate.price;
             userLocation = { ...userLocation, lat, lng, distance: dist };
             updateDeliveryDisplay();
-            
             const summaryDelivery = document.getElementById('summary-delivery');
             if (summaryDelivery) {
                 summaryDelivery.innerHTML = `Gs. ${deliveryCost.toLocaleString('es-PY')} <small style="color: #666">(${rate.label}, ${dist.toFixed(1)}km)</small>`;
@@ -525,9 +600,6 @@
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
-        // ==========================================
-        // UBICACIÓN
-        // ==========================================
         function switchTab(tab, el) {
             currentLocationTab = tab;
             document.querySelectorAll('.location-tab').forEach(t => t.classList.remove('active'));
@@ -561,39 +633,28 @@
         function copyGPSLocation() {
             if (!userLocation) return;
             const text = `${userLocation.address}\nCoordenadas: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}`;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Dirección copiada');
-            });
+            navigator.clipboard.writeText(text).then(() => alert('Dirección copiada'));
         }
 
-        // ==========================================
-        // PAGO
-        // ==========================================
         function selectPayment(method) {
             currentPayment = method;
             document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-            const payOption = document.getElementById(`pay-${method}`);
-            if (payOption) payOption.classList.add('selected');
-            
-            const transferSection = document.getElementById('transfer-section');
-            if (transferSection) transferSection.classList.toggle('active', method === 'transfer');
-            
-            const cashSection = document.getElementById('cash-section');
-            if (cashSection) cashSection.classList.toggle('active', method === 'cash');
+            document.getElementById(`pay-${method}`).classList.add('selected');
+            document.getElementById('transfer-section').classList.toggle('active', method === 'transfer');
+            document.getElementById('cash-section').classList.toggle('active', method === 'cash');
         }
 
         function calculateChange() {
             const amount = parseInt(document.getElementById('cash-amount').value) || 0;
-            const total = [...CATALOG.con, ...CATALOG.sin].reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost;
+            const allProducts = Object.values(CATALOG).flat();
+            const total = allProducts.reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost;
             const change = amount - total;
             const display = document.getElementById('change-display');
             if (!display) return;
-            
             if (amount === 0) {
                 display.style.display = 'none';
                 return;
             }
-            
             display.style.display = 'block';
             if (change < 0) {
                 display.className = 'vuelto-box error';
@@ -605,7 +666,7 @@
         }
 
         function copyAlias() {
-            navigator.clipboard.writeText(CONFIG.ALIAS).then(() => {
+            navigator.clipboard.writeText(CONFIG.store.alias).then(() => {
                 const box = document.querySelector('.alias-box');
                 if (box) {
                     const original = box.textContent;
@@ -615,17 +676,12 @@
             });
         }
 
-        // ==========================================
-        // CONFIRMAR PEDIDO
-        // ==========================================
         async function confirmOrder() {
             const name = document.getElementById('client-name').value.trim();
             const phone = document.getElementById('client-phone').value.trim();
             const deliveryType = document.getElementById('delivery-type').value;
-            
             if (!name) { alert('Ingresá tu nombre'); return; }
             if (!phone) { alert('Ingresá tu WhatsApp'); return; }
-            
             let address = '';
             if (deliveryType === 'delivery') {
                 if (currentLocationTab === 'gps') {
@@ -639,19 +695,18 @@
                     if (!address) { alert('Pegá el enlace de Google Maps o la dirección'); return; }
                 }
             } else {
-                address = 'Retiro en local - Yogurt Alma';
+                address = 'Retiro en local - ' + CONFIG.store.name;
             }
-            
             if (currentPayment === 'cash') {
                 const amount = parseInt(document.getElementById('cash-amount').value) || 0;
-                const total = [...CATALOG.con, ...CATALOG.sin].reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost;
+                const allProducts = Object.values(CATALOG).flat();
+                const total = allProducts.reduce((sum, p) => sum + (cart[p.id] * p.price), 0) + deliveryCost;
                 if (amount < total) { alert('El monto es insuficiente'); return; }
             }
-            
             const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) loadingScreen.classList.add('active');
-            
-            const items = [...CATALOG.con, ...CATALOG.sin].filter(p => cart[p.id] > 0);
+            loadingScreen.classList.add('active');
+            const allProducts = Object.values(CATALOG).flat();
+            const items = allProducts.filter(p => cart[p.id] > 0);
             const order = {
                 id: 'YA-' + Date.now().toString().slice(-6),
                 timestamp: new Date().toISOString(),
@@ -667,35 +722,26 @@
                     address: address,
                     coords: userLocation ? `${userLocation.lat},${userLocation.lng}` : ''
                 },
-                payment: { method: currentPayment, alias: currentPayment === 'transfer' ? CONFIG.ALIAS : null }
+                payment: { method: currentPayment, alias: currentPayment === 'transfer' ? CONFIG.store.alias : null }
             };
-            
             const message = generateSecureMessage(order);
-            const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(message)}`;
-            
+            const whatsappUrl = `https://wa.me/${CONFIG.store.whatsapp}?text=${encodeURIComponent(message)}`;
             try {
-                await fetch(CONFIG.GOOGLE_SHEETS_URL, {
+                await fetch(CONFIG.store.google_sheets_url, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(order)
                 });
             } catch (e) {}
-            
             setTimeout(() => {
-                if (loadingScreen) loadingScreen.classList.remove('active');
+                loadingScreen.classList.remove('active');
                 const successScreen = document.getElementById('success-screen');
-                if (successScreen) successScreen.classList.add('active');
-                
-                const whatsappBtn = document.getElementById('whatsapp-btn');
-                if (whatsappBtn) whatsappBtn.href = whatsappUrl;
-                
-                const successMsg = document.getElementById('success-message');
-                if (successMsg) {
-                    successMsg.textContent = currentPayment === 'transfer' 
-                        ? `Tu pedido está pendiente de pago.\n\nAlias: ${CONFIG.ALIAS}\nMonto: Gs. ${order.totals.total.toLocaleString('es-PY')}\n\nUna vez realizada la transferencia, envianos el comprobante por WhatsApp.`
-                        : 'Tu pedido está confirmado. Te contactaremos cuando esté listo.';
-                }
+                successScreen.classList.add('active');
+                document.getElementById('whatsapp-btn').href = whatsappUrl;
+                document.getElementById('success-message').textContent = currentPayment === 'transfer' 
+                    ? `Tu pedido está pendiente de pago.\n\nAlias: ${CONFIG.store.alias}\nMonto: Gs. ${order.totals.total.toLocaleString('es-PY')}\n\nUna vez realizada la transferencia, envianos el comprobante por WhatsApp.`
+                    : 'Tu pedido está confirmado. Te contactaremos cuando esté listo.';
             }, 1500);
         }
 
@@ -712,29 +758,21 @@
                 '',
                 '*PRODUCTOS:*'
             ];
-            
             order.items.forEach(item => {
                 lines.push(`• ${item.qty}x ${item.name}`);
                 lines.push(`  Gs. ${(item.qty * item.price).toLocaleString('es-PY')}`);
             });
-            
             lines.push('');
             lines.push('*TOTALES:*');
             lines.push(`Subtotal: Gs. ${order.totals.subtotal.toLocaleString('es-PY')}`);
-            if (order.totals.delivery > 0) {
-                lines.push(`Delivery: Gs. ${order.totals.delivery.toLocaleString('es-PY')}`);
-            }
+            if (order.totals.delivery > 0) lines.push(`Delivery: Gs. ${order.totals.delivery.toLocaleString('es-PY')}`);
             lines.push(`*TOTAL A PAGAR: Gs. ${order.totals.total.toLocaleString('es-PY')}*`);
             lines.push('');
-            
             lines.push('*ENTREGA:*');
             lines.push(`Tipo: ${order.delivery.type === 'pickup' ? 'Retiro en local' : 'Delivery'}`);
             lines.push(`Dirección: ${order.delivery.address}`);
-            if (order.delivery.coords) {
-                lines.push(`Maps: https://maps.google.com/?q=${order.delivery.coords}`);
-            }
+            if (order.delivery.coords) lines.push(`Maps: https://maps.google.com/?q=${order.delivery.coords}`);
             lines.push('');
-            
             lines.push('*PAGO:*');
             if (order.payment.method === 'transfer') {
                 lines.push(`Método: Transferencia`);
@@ -747,11 +785,9 @@
                 lines.push(`Paga con: Gs. ${parseInt(amount).toLocaleString('es-PY')}`);
                 lines.push(`Vuelto: Gs. ${change.toLocaleString('es-PY')}`);
             }
-            
             lines.push('');
             lines.push('✅ Pedido generado automáticamente');
             lines.push('📍 Por favor no modifiques este mensaje');
-            
             return lines.join('\n');
         }
 
@@ -759,86 +795,9 @@
             location.reload();
         }
 
-        // ==========================================
-        // SLIDER HERO
-        // ==========================================
-        let sliderInterval;
-        let currentSlide = 0;
-
-        async function initSlider() {
-            const container = document.getElementById('hero-slider');
-            const loading = document.getElementById('slider-loading');
-            const dotsContainer = document.getElementById('slider-dots');
-            if (!container || !loading || !dotsContainer) return;
-            
-            const encodedPath = encodeURIComponent(CONFIG.GITHUB.PATHS.slider);
-            const url = `https://api.github.com/repos/${CONFIG.GITHUB.USER}/${CONFIG.GITHUB.REPO}/contents/${encodedPath}?ref=${CONFIG.GITHUB.BRANCH}`;
-            
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error();
-                const files = await response.json();
-                const images = files.filter(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i));
-                
-                if (images.length === 0) throw new Error();
-                
-                container.innerHTML = '';
-                images.forEach((img, index) => {
-                    const slide = document.createElement('div');
-                    slide.className = `slide ${index === 0 ? 'active' : ''}`;
-                    slide.style.backgroundImage = `url('${img.download_url}')`;
-                    container.appendChild(slide);
-                });
-                
-                dotsContainer.innerHTML = '';
-                images.forEach((_, i) => {
-                    const dot = document.createElement('span');
-                    dot.className = `dot ${i === 0 ? 'active' : ''}`;
-                    dot.onclick = () => goToSlide(i);
-                    dotsContainer.appendChild(dot);
-                });
-                
-                loading.style.display = 'none';
-                startSliderAuto();
-            } catch (e) {
-                console.warn('Error cargando slider, usando imagen por defecto');
-                container.innerHTML = `<div class="slide active" style="background-image: url('https://via.placeholder.com/1920x1080/2C1810/FAF7F2?text=Yogurt+Alma');"></div>`;
-                loading.style.display = 'none';
-            }
-        }
-        
-        function startSliderAuto() {
-            if (sliderInterval) clearInterval(sliderInterval);
-            sliderInterval = setInterval(() => {
-                const slides = document.querySelectorAll('.slide');
-                const dots = document.querySelectorAll('.dot');
-                if (slides.length === 0) return;
-                slides[currentSlide].classList.remove('active');
-                dots[currentSlide].classList.remove('active');
-                currentSlide = (currentSlide + 1) % slides.length;
-                slides[currentSlide].classList.add('active');
-                dots[currentSlide].classList.add('active');
-            }, 5000);
-        }
-        
-        function goToSlide(index) {
-            const slides = document.querySelectorAll('.slide');
-            const dots = document.querySelectorAll('.dot');
-            if (slides.length === 0) return;
-            slides[currentSlide].classList.remove('active');
-            dots[currentSlide].classList.remove('active');
-            currentSlide = index;
-            slides[currentSlide].classList.add('active');
-            dots[currentSlide].classList.add('active');
-            clearInterval(sliderInterval);
-            startSliderAuto();
-        }
-
-        // ==========================================
-        // UTILIDADES
-        // ==========================================
         function scrollToProducts() {
-            document.getElementById('products-con').scrollIntoView({ behavior: 'smooth' });
+            const firstSection = categoriesContainer.querySelector('.section');
+            if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
         }
 
         function initScrollAnimations() {
@@ -853,14 +812,14 @@
         function setupAdminAccess() {
             document.addEventListener('keydown', (e) => {
                 if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                    const adminPanel = document.getElementById('admin-panel');
-                    if (adminPanel) adminPanel.classList.toggle('visible');
+                    document.getElementById('admin-panel').classList.toggle('visible');
                 }
             });
         }
 
         function downloadJSONTemplate() {
-            const currentProducts = [...CATALOG.con, ...CATALOG.sin].map(p => ({
+            const allProducts = Object.values(CATALOG).flat();
+            const template = allProducts.map(p => ({
                 id: p.id,
                 name: p.name,
                 desc: p.desc,
@@ -870,8 +829,7 @@
                 badge: p.badge || null,
                 imageFile: p.imageFile
             }));
-            const jsonStr = JSON.stringify(currentProducts, null, 2);
-            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(template, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -882,32 +840,46 @@
 
         function initThemeSwitcher() {
             const btns = document.querySelectorAll('.theme-btn');
-            const savedTheme = localStorage.getItem('yogurt-theme') || 'default';
-            document.body.setAttribute('data-theme', savedTheme);
-            
-            btns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const theme = btn.getAttribute('data-theme');
-                    document.body.setAttribute('data-theme', theme);
-                    localStorage.setItem('yogurt-theme', theme);
-                });
-            });
+            const saved = localStorage.getItem('yogurt-theme') || 'default';
+            document.body.setAttribute('data-theme', saved);
+            btns.forEach(btn => btn.addEventListener('click', () => {
+                const theme = btn.getAttribute('data-theme');
+                document.body.setAttribute('data-theme', theme);
+                localStorage.setItem('yogurt-theme', theme);
+            }));
         }
 
         // ==========================================
         // INICIALIZACIÓN
         // ==========================================
+        const CONFIG_GITHUB = {
+            USER: 'eveliorosabal-cyber',
+            REPO: 'yogurt-alma-assets',
+            BRANCH: 'main',
+            PATHS: {
+                slider: 'images/slider'
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', async () => {
-            await loadProductsFromJSON();
-            await loadLogos();
-            await initSlider();
-            initThemeSwitcher();
-            initScrollAnimations();
-            setupAdminAccess();
+            try {
+                await loadConfig();        // primero configuración
+                await loadProductsFromJSON(); // luego productos
+                renderHero();
+                renderCategories();
+                await initSlider();
+                initThemeSwitcher();
+                initScrollAnimations();
+                setupAdminAccess();
+                // Ocultar skeletons (ya se ocultan en renderCategories)
+            } catch (err) {
+                console.error('Error fatal:', err);
+                alert('Error al cargar la página. Revisa tu conexión e intenta de nuevo.');
+            }
         });
     </script>
 
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGW38f4I-sjvJ9TWKBpsJGF0WM1tOCrK0&libraries=places&language=es" async defer></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGW38f4I-sjvJ9TWKBpsJGF0WM1tOCrK0&libraries=places&language=es"></script>
 </body>
 </html>
