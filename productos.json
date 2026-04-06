@@ -1,9 +1,9 @@
 [
     {
         "id": "CL01",
-        "name": "Natural Clásico",
+        "name": "PROD 1 LACT",
         "desc": "El auténtico sabor tradicional, cremoso y equilibrado",
-        "weight": "500g",
+        "weight": "450g",
         "price": 15000,
         "category": "con",
         "badge": null,
@@ -11,8 +11,8 @@
     },
     {
         "id": "CL02",
-        "name": "Fresa Selecta",
-        "desc": "Con frutillas frescas maceradas en su propio jugo",
+        "name": "PROD 2 LACT",
+        "desc": "",
         "weight": "500g",
         "price": 16000,
         "category": "con",
@@ -21,8 +21,8 @@
     },
     {
         "id": "CL03",
-        "name": "Mora Silvestre",
-        "desc": "Arándanos y moras en equilibrio perfecto",
+        "name": "PROD 3 LACT",
+        "desc": "",
         "weight": "500g",
         "price": 16000,
         "category": "con",
@@ -31,9 +31,9 @@
     },
     {
         "id": "CL04",
-        "name": "Durazno de Estación",
-        "desc": "Duraznos maduros en almíbar artesanal",
-        "weight": "500g",
+        "name": "PROD 4 LACT",
+        "desc": "",
+        "weight": "450g",
         "price": 16000,
         "category": "con",
         "badge": null,
@@ -41,8 +41,8 @@
     },
     {
         "id": "CL05",
-        "name": "Vainilla Bourbon",
-        "desc": "Vainilla Madagascar de origen ético",
+        "name": "PROD 5 LACT",
+        "desc": "",
         "weight": "500g",
         "price": 15500,
         "category": "con",
@@ -51,8 +51,8 @@
     },
     {
         "id": "CL06",
-        "name": "Coco Natural",
-        "desc": "Con leche de coco y coco rallado tostado",
+        "name": "PROD 6 LACT",
+        "desc": "",
         "weight": "500g",
         "price": 17000,
         "category": "con",
@@ -61,7 +61,7 @@
     },
     {
         "id": "CL07",
-        "name": "Mix de Frutos",
+        "name": "PROD 7 LACT",
         "desc": "Combinación especial de frutos rojos y tropicales",
         "weight": "500g",
         "price": 18000,
@@ -71,72 +71,144 @@
     },
     {
         "id": "SL01",
-        "name": "Natural Sin Lactosa",
+        "name": "PROD 1 SIN",
         "desc": "Digestivo y ligero, manteniendo toda la cremosidad",
-        "weight": "500g",
+        "weight": "450g",
         "price": 18000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 8 SIN.jpg"
+        "imageFile": "PROD 1 SIN.jpg"
     },
     {
         "id": "SL02",
-        "name": "Fresa Sin Lactosa",
-        "desc": "La misma frescura, ahora sin lactosa",
+        "name": "PROD 2 SIN",
+        "desc": "",
         "weight": "500g",
         "price": 19000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 9 SIN.jpg"
+        "imageFile": "PROD 2 SIN.jpg"
     },
     {
         "id": "SL03",
-        "name": "Mora Sin Lactosa",
-        "desc": "Antioxidantes naturales en formato digestivo",
+        "name": "PROD 3 SIN",
+        "desc": "",
         "weight": "500g",
         "price": 19000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 10 SIN.jpg"
+        "imageFile": "PROD 3 SIN.jpg"
     },
     {
         "id": "SL04",
-        "name": "Durazno Sin Lactosa",
-        "desc": "Dulzura natural sin compromisos",
+        "name": "PROD 4 SIN",
+        "desc": "",
         "weight": "500g",
         "price": 19000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 11 SIN.jpg"
+        "imageFile": "PROD 4 SIN.jpg"
     },
     {
         "id": "SL05",
-        "name": "Vainilla Sin Lactosa",
+        "name": "PROD 5 SIN",
         "desc": "Suavidad y sabor en perfecta armonía",
         "weight": "500g",
         "price": 18500,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 12 SIN.jpg"
+        "imageFile": "PROD 5 SIN.jpg"
     },
     {
         "id": "SL06",
-        "name": "Coco Sin Lactosa",
-        "desc": "Doble coco para máxima cremosidad vegetal",
+        "name": "PROD 6 SIN",
+        "desc": "",
         "weight": "500g",
         "price": 20000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 13 SIN.jpg"
+        "imageFile": "PROD 6 SIN.jpg"
     },
     {
         "id": "SL07",
-        "name": "Mix Sin Lactosa",
+        "name": "PROD 7 SIN",
         "desc": "La experiencia completa, libre de lactosa",
         "weight": "500g",
         "price": 21000,
         "category": "sin",
         "badge": "Sin Lactosa",
-        "imageFile": "PROD 14 SIN.jpg"
+        "imageFile": "PROD 7 SIN.jpg"
     }
-]
+],
+    {
+        "id": "SL01",
+        "name": "PROD 1",
+        "desc": "Guaraná",
+        "weight": "500g",
+        "price": 21000,
+        "category": "gaseosa",
+        "badge": "Gaseosa",
+        "imageFile": "PROD 1.jpg"
+    }
+],
+    {
+        "id": "SL02",
+        "name": "PROD 2",
+        "desc": "",
+        "weight": "2L",
+        "price": 21000,
+        "category": "gaseosa",
+        "badge": "Gaseosa",
+        "imageFile": "PROD 2.jpg"
+    }
+],    {
+        "id": "SL03",
+        "name": "PROD 3",
+        "desc": "",
+        "weight": "500g",
+        "price": 21000,
+        "category": "gaseosa",
+        "badge": "Gaseosa",
+        "imageFile": "PROD 3.jpg"
+    }
+],    {
+        "id": "SL04",
+        "name": "PROD 4",
+        "desc": "La experiencia completa",
+        "weight": "1,5L",
+        "price": 21000,
+        "category": "gaseosa",
+        "badge": "Gaseosa",
+        "imageFile": "PROD 4.jpg"
+    }
+],    {
+        "id": "SL05",
+        "name": "PROD 5",
+        "desc": "",
+        "weight": "500g",
+        "price": 21000,
+        "category": "gaseosa",
+        "badge": "Gaseosa",
+        "imageFile": "PROD 5.jpg"
+    }
+],    {
+        "id": "SL06",
+        "name": "PROD 6",
+        "desc": "",
+        "weight": "500g",
+        "price": 21000,
+        "category": "gaseosa",
+        "badge": "Gaseosa",
+        "imageFile": "PROD 6.jpg"
+    }
+],    {
+        "id": "SL07",
+        "name": "PROD 7",
+        "desc": "",
+        "weight": "500g",
+        "price": 21000,
+        "category": "gaseosa",
+        "badge": "Gaseosa",
+        "imageFile": "PROD 7.jpg"
+    }
+],
