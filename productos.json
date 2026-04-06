@@ -138,8 +138,7 @@
         "category": "sin",
         "badge": "Sin Lactosa",
         "imageFile": "PROD 7 SIN.jpg"
-    }
-],
+    ],
     {
         "id": "SL01",
         "name": "PROD 1",
@@ -149,8 +148,7 @@
         "category": "gaseosa",
         "badge": "Gaseosa",
         "imageFile": "PROD 1.jpg"
-    }
-],
+    ],
     {
         "id": "SL02",
         "name": "PROD 2",
@@ -160,8 +158,8 @@
         "category": "gaseosa",
         "badge": "Gaseosa",
         "imageFile": "PROD 2.jpg"
-    }
-],    {
+    ],
+    {
         "id": "SL03",
         "name": "PROD 3",
         "desc": "",
@@ -170,8 +168,8 @@
         "category": "gaseosa",
         "badge": "Gaseosa",
         "imageFile": "PROD 3.jpg"
-    }
-],    {
+    ],
+    {
         "id": "SL04",
         "name": "PROD 4",
         "desc": "La experiencia completa",
@@ -180,8 +178,8 @@
         "category": "gaseosa",
         "badge": "Gaseosa",
         "imageFile": "PROD 4.jpg"
-    }
-],    {
+    ],
+    {
         "id": "SL05",
         "name": "PROD 5",
         "desc": "",
@@ -190,8 +188,8 @@
         "category": "gaseosa",
         "badge": "Gaseosa",
         "imageFile": "PROD 5.jpg"
-    }
-],    {
+    ],
+    {
         "id": "SL06",
         "name": "PROD 6",
         "desc": "",
@@ -200,8 +198,8 @@
         "category": "gaseosa",
         "badge": "Gaseosa",
         "imageFile": "PROD 6.jpg"
-    }
-],    {
+    ],
+    {
         "id": "SL07",
         "name": "PROD 7",
         "desc": "",
@@ -210,5 +208,4 @@
         "category": "gaseosa",
         "badge": "Gaseosa",
         "imageFile": "PROD 7.jpg"
-    }
-],
+    ],
