@@ -8,9 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================
-           VARIABLES GLOBALES (solo claro/oscuro)
-        ========================================== */
+        /* ========== VARIABLES SOLO CLARO/OSCURO ========== */
         :root {
             --color-primary: #2C1810;
             --color-secondary: #8B6F47;
@@ -21,28 +19,20 @@
             --color-error: #B85C5C;
             --font-display: 'Playfair Display', serif;
             --font-body: 'Inter', sans-serif;
-            --shadow-soft: 0 4px 20px rgba(44, 24, 16, 0.08);
-            --shadow-elevated: 0 8px 30px rgba(44, 24, 16, 0.12);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-soft: 0 4px 20px rgba(44,24,16,0.08);
+            --shadow-elevated: 0 8px 30px rgba(44,24,16,0.12);
+            --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
         }
-
         body[data-theme="dark"] {
             --color-primary: #F5F0E8;
             --color-secondary: #D4A574;
             --color-accent: #B8860B;
             --color-cream: #1E1A17;
             --color-milk: #2C241F;
-            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
-            --shadow-elevated: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.3);
+            --shadow-elevated: 0 8px 30px rgba(0,0,0,0.4);
         }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: var(--font-body);
             background: var(--color-cream);
@@ -50,9 +40,8 @@
             line-height: 1.6;
             overflow-x: hidden;
             padding-bottom: 2rem;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background 0.3s, color 0.3s;
         }
-
         /* Theme Switcher */
         .theme-switcher {
             position: fixed;
@@ -67,9 +56,7 @@
             backdrop-filter: blur(4px);
             box-shadow: var(--shadow-soft);
         }
-        body[data-theme="dark"] .theme-switcher {
-            background: rgba(0,0,0,0.6);
-        }
+        body[data-theme="dark"] .theme-switcher { background: rgba(0,0,0,0.6); }
         .theme-btn {
             background: transparent;
             border: none;
@@ -83,12 +70,8 @@
             justify-content: center;
             transition: var(--transition);
         }
-        .theme-btn:hover {
-            background: var(--color-milk);
-            transform: scale(1.1);
-        }
-
-        /* Hero */
+        .theme-btn:hover { background: var(--color-milk); transform: scale(1.1); }
+        /* Hero y slider */
         .hero {
             position: relative;
             height: 100vh;
@@ -135,7 +118,6 @@
             text-transform: uppercase;
             margin-bottom: 1.5rem;
             opacity: 0.9;
-            font-weight: 500;
         }
         .hero-title {
             font-family: var(--font-display);
@@ -159,7 +141,6 @@
             padding: 1rem 2.5rem;
             background: var(--color-cream);
             color: var(--color-primary);
-            text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
             font-size: 0.95rem;
@@ -169,10 +150,7 @@
             cursor: pointer;
             box-shadow: var(--shadow-elevated);
         }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(44, 24, 16, 0.2);
-        }
+        .btn-primary:hover { transform: translateY(-2px); }
         .slider-dots {
             position: absolute;
             bottom: 2rem;
@@ -190,11 +168,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        .dot.active {
-            background: var(--color-cream);
-            transform: scale(1.3);
-        }
-
+        .dot.active { background: var(--color-cream); transform: scale(1.3); }
         /* Secciones y productos */
         .section {
             padding: 6rem 1.5rem;
@@ -236,9 +210,7 @@
             box-shadow: var(--shadow-soft);
             transition: var(--transition);
         }
-        body[data-theme="dark"] .product-card {
-            background: #2C241F;
-        }
+        body[data-theme="dark"] .product-card { background: #2C241F; }
         .product-card:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-elevated);
@@ -266,13 +238,11 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
-            letter-spacing: 0.05em;
         }
         .product-info { padding: 1.5rem; }
         .product-meta {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             margin-bottom: 0.5rem;
         }
         .product-weight {
@@ -293,18 +263,14 @@
             color: var(--color-primary);
             margin-bottom: 0.5rem;
             font-weight: 600;
-            line-height: 1.3;
         }
         .product-description {
             color: #666;
             font-size: 0.9rem;
             line-height: 1.5;
             margin-bottom: 1.25rem;
-            min-height: 2.7em;
         }
-        body[data-theme="dark"] .product-description {
-            color: #ccc;
-        }
+        body[data-theme="dark"] .product-description { color: #ccc; }
         .product-footer {
             display: flex;
             justify-content: space-between;
@@ -349,7 +315,6 @@
             text-align: center;
             font-size: 0.95rem;
         }
-
         /* Carrito flotante */
         .cart-float {
             position: fixed;
@@ -359,7 +324,7 @@
             background: white;
             padding: 1.25rem 1.5rem;
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(44, 24, 16, 0.2);
+            box-shadow: 0 8px 32px rgba(44,24,16,0.2);
             display: none;
             justify-content: space-between;
             align-items: center;
@@ -368,14 +333,11 @@
             margin: 0 auto;
             border: 1px solid rgba(0,0,0,0.05);
         }
-        body[data-theme="dark"] .cart-float {
-            background: #2C241F;
-        }
+        body[data-theme="dark"] .cart-float { background: #2C241F; }
         .cart-float.active { display: flex; }
         .cart-info h3 {
             font-size: 0.85rem;
             color: var(--color-secondary);
-            font-weight: 500;
             margin-bottom: 0.25rem;
         }
         .cart-total {
@@ -399,12 +361,11 @@
             background: var(--color-secondary);
             transform: scale(1.02);
         }
-
         /* Modal checkout */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(44, 24, 16, 0.6);
+            background: rgba(44,24,16,0.6);
             backdrop-filter: blur(8px);
             z-index: 1000;
             opacity: 0;
@@ -426,11 +387,9 @@
             border-radius: 24px 24px 0 0;
             overflow-y: auto;
             transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
         }
-        body[data-theme="dark"] .modal-content {
-            background: #2C241F;
-        }
+        body[data-theme="dark"] .modal-content { background: #2C241F; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
         .modal-header {
             padding: 1.5rem;
@@ -470,8 +429,7 @@
             padding: 1.5rem;
             padding-bottom: 3rem;
         }
-
-        /* Formulario simplificado (sin delivery) */
+        /* Formulario */
         .form-group { margin-bottom: 1.5rem; }
         .form-label {
             display: block;
@@ -479,9 +437,8 @@
             font-weight: 600;
             color: var(--color-primary);
             margin-bottom: 0.5rem;
-            letter-spacing: 0.02em;
         }
-        .form-input, .form-select, .form-textarea {
+        .form-input, .form-select {
             width: 100%;
             padding: 1rem;
             border: 2px solid var(--color-milk);
@@ -492,16 +449,15 @@
             background: white;
         }
         body[data-theme="dark"] .form-input,
-        body[data-theme="dark"] .form-select,
-        body[data-theme="dark"] .form-textarea {
+        body[data-theme="dark"] .form-select {
             background: #1E1A17;
             color: var(--color-primary);
             border-color: #3E322C;
         }
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
+        .form-input:focus, .form-select:focus {
             outline: none;
             border-color: var(--color-accent);
-            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+            box-shadow: 0 0 0 3px rgba(212,165,116,0.1);
         }
         .order-summary {
             background: var(--color-milk);
@@ -523,9 +479,7 @@
             color: #555;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        body[data-theme="dark"] .summary-item {
-            color: #ccc;
-        }
+        body[data-theme="dark"] .summary-item { color: #ccc; }
         .summary-total {
             display: flex;
             justify-content: space-between;
@@ -555,7 +509,7 @@
         .payment-option:hover { border-color: var(--color-accent); }
         .payment-option.selected {
             border-color: var(--color-primary);
-            background: rgba(44, 24, 16, 0.02);
+            background: rgba(44,24,16,0.02);
         }
         .payment-option.selected::after {
             content: '';
@@ -591,9 +545,7 @@
             text-align: center;
             border: 2px dashed var(--color-accent);
         }
-        body[data-theme="dark"] .transfer-info {
-            background: #1E1A17;
-        }
+        body[data-theme="dark"] .transfer-info { background: #1E1A17; }
         .alias-box {
             background: white;
             padding: 1rem 2rem;
@@ -643,9 +595,7 @@
         .btn-confirm:hover {
             background: var(--color-secondary);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-elevated);
         }
-
         /* Pantallas de estado */
         .status-screen {
             position: fixed;
@@ -705,8 +655,7 @@
             transition: var(--transition);
         }
         .whatsapp-btn:hover { transform: scale(1.05); }
-
-        /* Admin panel (oculto) */
+        /* Admin panel */
         .admin-panel {
             position: fixed;
             top: 1rem;
@@ -727,7 +676,6 @@
             transition: opacity 0.3s;
         }
         .btn-admin:hover { opacity: 1; }
-
         /* Utilidades */
         .hidden { display: none !important; }
         .fade-up {
@@ -771,18 +719,15 @@
     </style>
 </head>
 <body data-theme="default">
-    <!-- Theme Switcher (solo claro/oscuro) -->
     <div class="theme-switcher" id="theme-switcher">
         <button class="theme-btn" data-theme="default" title="Tema Claro">🌞</button>
         <button class="theme-btn" data-theme="dark" title="Tema Oscuro">🌙</button>
     </div>
 
-    <!-- ADMIN PANEL (Ctrl+Shift+A) -->
     <div class="admin-panel" id="admin-panel">
         <button class="btn-admin" onclick="downloadJSONTemplate()">Descargar JSON Productos</button>
     </div>
 
-    <!-- HERO -->
     <section class="hero">
         <div class="slider-container" id="hero-slider">
             <div id="slider-loading" style="position: absolute; inset: 0; display: grid; place-items: center; background: rgba(44,24,16,0.8);">
@@ -796,10 +741,8 @@
         <div class="slider-dots" id="slider-dots"></div>
     </section>
 
-    <!-- Contenedor dinámico para categorías -->
     <div id="categories-container"></div>
 
-    <!-- CARRITO -->
     <div class="cart-float" id="cart-float">
         <div class="cart-info">
             <h3>Tu Pedido</h3>
@@ -808,7 +751,6 @@
         <button class="btn-cart" onclick="openCheckout()">Ver Pedido</button>
     </div>
 
-    <!-- MODAL CHECKOUT (sin delivery) -->
     <div class="modal-overlay" id="modal-checkout" onclick="closeCheckout(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -819,7 +761,6 @@
         </div>
     </div>
 
-    <!-- PANTALLAS ESTADO -->
     <div class="status-screen" id="loading-screen">
         <div class="status-icon loading"></div>
         <h2 class="status-title">Procesando tu pedido</h2>
@@ -834,34 +775,24 @@
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURACIÓN GITHUB
-        // ==========================================
+        // ========== CONFIGURACIÓN GITHUB ==========
         const CONFIG_GITHUB = {
             USER: 'eveliorosabal-cyber',
             REPO: 'yogurt-alma-assets',
             BRANCH: 'main',
-            PATHS: {
-                slider: 'images/slider'
-            }
+            PATHS: { slider: 'images/slider' }
         };
 
-        // ==========================================
-        // DATOS GLOBALES
-        // ==========================================
         let CONFIG = {};
         let CATALOG = {};
         let cart = {};
         let currentPayment = 'cash';
 
-        // Elementos
         const categoriesContainer = document.getElementById('categories-container');
         const heroContent = document.getElementById('hero-content');
         const modalBody = document.getElementById('modal-body');
 
-        // ==========================================
-        // FUNCIONES DE CARGA DE DATOS
-        // ==========================================
+        // ========== CARGAR CONFIG ==========
         async function loadConfig() {
             const base = `https://raw.githubusercontent.com/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/${CONFIG_GITHUB.BRANCH}/`;
             const url = base + 'config.json?t=' + Date.now();
@@ -869,15 +800,15 @@
                 const resp = await fetch(url);
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                 CONFIG = await resp.json();
-                console.log('Config cargada:', CONFIG);
+                console.log('Config cargada');
             } catch (e) {
-                console.error('Error cargando config.json:', e);
-                alert('No se pudo cargar la configuración. Revisa tu conexión.');
+                console.error(e);
+                alert('No se pudo cargar la configuración.');
                 throw e;
             }
         }
 
-        // CARGA DE PRODUCTOS CON VERIFICACIÓN DE IMAGEN (solo si existe)
+        // ========== CARGAR PRODUCTOS CON VERIFICACIÓN DE IMAGEN ==========
         async function loadProductsFromJSON() {
             const base = `https://raw.githubusercontent.com/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/${CONFIG_GITHUB.BRANCH}/`;
             const url = base + 'productos.json?t=' + Date.now();
@@ -886,10 +817,9 @@
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                 const productos = await resp.json();
 
-                // Mostrar loader mientras se verifican imágenes
                 const loader = document.createElement('div');
                 loader.id = 'img-verifier';
-                loader.innerHTML = '<div style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--color-primary); color:white; padding:1rem 2rem; border-radius:40px; z-index:10000; font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,0.3);">Verificando productos con imágenes reales...</div>';
+                loader.innerHTML = '<div style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--color-primary); color:white; padding:1rem 2rem; border-radius:40px; z-index:10000; font-weight:bold;">Verificando imágenes...</div>';
                 document.body.appendChild(loader);
 
                 const verificarImagen = async (producto) => {
@@ -902,11 +832,11 @@
                             producto.image = imageUrl;
                             return producto;
                         } else {
-                            console.warn(`[FILTRO] Imagen no encontrada: ${imageUrl} - Producto omitido: ${producto.name}`);
+                            console.warn(`Imagen no encontrada: ${imageUrl} - omitido: ${producto.name}`);
                             return null;
                         }
                     } catch (err) {
-                        console.warn(`[FILTRO] Error verificando ${imageUrl}:`, err);
+                        console.warn(`Error verificando ${imageUrl}:`, err);
                         return null;
                     }
                 };
@@ -914,7 +844,6 @@
                 const resultados = await Promise.all(productos.map(p => verificarImagen(p)));
                 const productosValidos = resultados.filter(p => p !== null);
 
-                // Agrupar por categoría
                 CATALOG = {};
                 for (const p of productosValidos) {
                     const cat = p.category;
@@ -922,60 +851,45 @@
                     CATALOG[cat].push(p);
                 }
 
-                console.log('✅ Productos cargados (solo con imagen real):', CATALOG);
+                console.log('Productos válidos (con imagen real):', CATALOG);
                 const loaderEl = document.getElementById('img-verifier');
                 if (loaderEl) loaderEl.remove();
 
                 if (productosValidos.length === 0) {
-                    categoriesContainer.innerHTML = '<div class="error-message">⚠️ No hay productos disponibles hoy. Por favor, revisa más tarde.</div>';
+                    categoriesContainer.innerHTML = '<div class="error-message">⚠️ No hay productos disponibles hoy. Revisa más tarde.</div>';
                 }
-
             } catch (e) {
-                console.error('Error cargando productos.json:', e);
-                alert('No se pudo cargar la lista de productos.');
+                console.error(e);
+                alert('Error al cargar productos.');
                 throw e;
             }
         }
 
-        // ==========================================
-        // SLIDER (igual que antes)
-        // ==========================================
-        let sliderInterval;
-        let currentSlide = 0;
-        let sliderItems = [];
-
+        // ========== SLIDER ==========
+        let sliderInterval, currentSlide = 0, sliderItems = [];
         async function initSlider() {
             const container = document.getElementById('hero-slider');
             const loading = document.getElementById('slider-loading');
             const dotsContainer = document.getElementById('slider-dots');
-            if (!container || !loading || !dotsContainer) return;
+            if (!container) return;
 
             const base = `https://raw.githubusercontent.com/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/${CONFIG_GITHUB.BRANCH}/`;
             const folderPath = CONFIG_GITHUB.PATHS.slider;
-            const encodedPath = encodeURIComponent(folderPath);
-            const url = `https://api.github.com/repos/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/contents/${encodedPath}?ref=${CONFIG_GITHUB.BRANCH}`;
+            const url = `https://api.github.com/repos/${CONFIG_GITHUB.USER}/${CONFIG_GITHUB.REPO}/contents/${encodeURIComponent(folderPath)}?ref=${CONFIG_GITHUB.BRANCH}`;
 
             try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const files = await response.json();
-                const mediaFiles = files.filter(file => {
-                    const ext = file.name.split('.').pop().toLowerCase();
-                    return ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'webm', 'mov'].includes(ext);
-                });
-                if (mediaFiles.length === 0) throw new Error('No media files');
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error();
+                const files = await resp.json();
+                const mediaFiles = files.filter(f => /\.(jpg|jpeg|png|gif|mp4|webm|mov)$/i.test(f.name));
+                if (mediaFiles.length === 0) throw new Error();
 
-                sliderItems = mediaFiles.map(file => {
-                    const ext = file.name.split('.').pop().toLowerCase();
-                    const isVideo = ['mp4', 'webm', 'mov'].includes(ext);
-                    return {
-                        type: isVideo ? 'video' : 'image',
-                        url: file.download_url
-                    };
+                sliderItems = mediaFiles.map(f => {
+                    const isVideo = /\.(mp4|webm|mov)$/i.test(f.name);
+                    return { type: isVideo ? 'video' : 'image', url: f.download_url };
                 });
 
                 while (container.firstChild) container.removeChild(container.firstChild);
-
                 sliderItems.forEach((item, idx) => {
                     const slideDiv = document.createElement('div');
                     slideDiv.className = `slide ${idx === 0 ? 'active' : ''}`;
@@ -1009,12 +923,10 @@
                 loading.style.display = 'none';
                 startSliderAuto();
             } catch (e) {
-                console.warn('Error cargando slider, usando imagen por defecto');
                 container.innerHTML = `<div class="slide active" style="background-image: url('https://via.placeholder.com/1920x1080/2C1810/FAF7F2?text=Yogurt+Alma');"></div>`;
                 loading.style.display = 'none';
             }
         }
-
         function startSliderAuto() {
             if (sliderInterval) clearInterval(sliderInterval);
             sliderInterval = setInterval(() => {
@@ -1028,7 +940,6 @@
                 dots[currentSlide].classList.add('active');
             }, 5000);
         }
-
         function goToSlide(index) {
             const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('.dot');
@@ -1042,9 +953,7 @@
             startSliderAuto();
         }
 
-        // ==========================================
-        // RENDERIZADO DE PÁGINA
-        // ==========================================
+        // ========== RENDER ==========
         function renderHero() {
             if (!CONFIG.hero) return;
             heroContent.innerHTML = `
@@ -1108,7 +1017,6 @@
             img.className = 'product-image';
             img.alt = product.name;
             img.src = product.image;
-            // Si por alguna razón la imagen falla (no debería), ocultamos la tarjeta
             img.onerror = () => { card.style.display = 'none'; };
 
             const imageWrapper = document.createElement('div');
@@ -1144,9 +1052,7 @@
             return card;
         }
 
-        // ==========================================
-        // CARRITO Y CHECKOUT (sin delivery)
-        // ==========================================
+        // ========== CARRITO ==========
         function updateQuantity(productId, delta) {
             const newQty = (cart[productId] || 0) + delta;
             if (newQty >= 0) {
@@ -1176,7 +1082,7 @@
                 const allProducts = Object.values(CATALOG).flat();
                 const items = allProducts.filter(p => cart[p.id] > 0);
                 if (items.length === 0) {
-                    container.innerHTML = '<p style="color: #999; font-size: 0.9rem;">No hay productos seleccionados</p>';
+                    container.innerHTML = '<p style="color: #999;">No hay productos seleccionados</p>';
                 } else {
                     container.innerHTML = items.map(p => `
                         <div class="summary-item">
@@ -1191,17 +1097,13 @@
         function openCheckout() {
             const allProducts = Object.values(CATALOG).flat();
             const items = allProducts.filter(p => cart[p.id] > 0);
-            if (items.length === 0) {
-                alert('Agregá productos a tu pedido');
-                return;
-            }
+            if (items.length === 0) { alert('Agregá productos a tu pedido'); return; }
             updateCart();
             const modal = document.getElementById('modal-checkout');
-            if (modal) modal.classList.add('active');
+            modal.classList.add('active');
             document.body.style.overflow = 'hidden';
-            if (modalBody.children.length === 0) {
-                renderCheckoutModal();
-            } else {
+            if (modalBody.children.length === 0) renderCheckoutModal();
+            else {
                 const total = items.reduce((sum, p) => sum + (cart[p.id] * p.price), 0);
                 updateCheckoutSummary(total);
             }
@@ -1240,10 +1142,10 @@
                 </div>
                 <div id="transfer-section" class="conditional-section">
                     <div class="transfer-info">
-                        <p style="margin-bottom: 0.5rem; font-weight: 600;">Realizá la transferencia al siguiente alias:</p>
+                        <p style="margin-bottom:0.5rem; font-weight:600;">Realizá la transferencia al siguiente alias:</p>
                         <div class="alias-box" onclick="copyAlias()">${CONFIG.store.alias}</div>
-                        <p style="font-size: 0.875rem; color: #666; margin-bottom: 1rem;">Tocá el alias para copiarlo</p>
-                        <div style="background: white; padding: 1rem; border-radius: 8px; text-align: left; font-size: 0.9rem;">
+                        <p style="font-size:0.875rem; margin-bottom:1rem;">Tocá el alias para copiarlo</p>
+                        <div style="background:white; padding:1rem; border-radius:8px; text-align:left;">
                             <strong>Banco:</strong> Tigo Money / Bancard<br>
                             <strong>Titular:</strong> ${CONFIG.store.name}<br>
                             <strong>Monto:</strong> <span id="transfer-amount">Gs. 0</span>
@@ -1287,10 +1189,7 @@
             const change = amount - total;
             const display = document.getElementById('change-display');
             if (!display) return;
-            if (amount === 0) {
-                display.style.display = 'none';
-                return;
-            }
+            if (amount === 0) { display.style.display = 'none'; return; }
             display.style.display = 'block';
             if (change < 0) {
                 display.className = 'vuelto-box error';
@@ -1325,8 +1224,7 @@
                 if (amount < total) { alert('El monto es insuficiente'); return; }
             }
 
-            const loadingScreen = document.getElementById('loading-screen');
-            loadingScreen.classList.add('active');
+            document.getElementById('loading-screen').classList.add('active');
 
             const allProducts = Object.values(CATALOG).flat();
             const items = allProducts.filter(p => cart[p.id] > 0);
@@ -1354,7 +1252,7 @@
             } catch (e) {}
 
             setTimeout(() => {
-                loadingScreen.classList.remove('active');
+                document.getElementById('loading-screen').classList.remove('active');
                 const successScreen = document.getElementById('success-screen');
                 successScreen.classList.add('active');
                 document.getElementById('whatsapp-btn').href = whatsappUrl;
@@ -1415,9 +1313,7 @@
 
         function initScrollAnimations() {
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('visible');
-                });
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
             }, { threshold: 0.1 });
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
         }
@@ -1433,14 +1329,8 @@
         function downloadJSONTemplate() {
             const allProducts = Object.values(CATALOG).flat();
             const template = allProducts.map(p => ({
-                id: p.id,
-                name: p.name,
-                desc: p.desc,
-                weight: p.weight,
-                price: p.price,
-                category: p.category,
-                badge: p.badge || null,
-                imageFile: p.imageFile
+                id: p.id, name: p.name, desc: p.desc, weight: p.weight,
+                price: p.price, category: p.category, badge: p.badge || null, imageFile: p.imageFile
             }));
             const blob = new Blob([JSON.stringify(template, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1462,9 +1352,7 @@
             }));
         }
 
-        // ==========================================
-        // INICIALIZACIÓN
-        // ==========================================
+        // ========== INICIO ==========
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 await loadConfig();
@@ -1476,8 +1364,8 @@
                 initScrollAnimations();
                 setupAdminAccess();
             } catch (err) {
-                console.error('Error fatal:', err);
-                alert('Error al cargar la página. Revisa tu conexión e intenta de nuevo.');
+                console.error(err);
+                alert('Error al cargar la página. Revisa tu conexión.');
             }
         });
     </script>
