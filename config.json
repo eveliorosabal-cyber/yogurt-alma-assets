@@ -3,8 +3,7 @@
     "badge": "Hecho con Alma desde 2020",
     "title": "El Auténtico Yogurt Griego Artesanal",
     "subtitle": "Preparado tradicionalmente en pequeños lotes, con leche seleccionada y cultivo probiótico vivo. Directo de nuestra cocina a tu mesa.",
-    "button": "Ver Productos Disponibles Hoy"
-  },
+    },
   "store": {
     "name": "Yogurt Alma",
     "whatsapp": "595994883355",
@@ -21,22 +20,26 @@
     { "maxKm": 15, "price": 12000, "label": "Lejana" }
   ],
   "categories": {
-    "order": ["con", "sin"],
+    "order": ["Gaseosa", "con", "sin"],
     "names": {
       "con": "Tradicional",
-      "sin": "Sin Lactosa"
+      "sin": "Sin Lactosa",
+      "gaseosa": "Gaseosa"
     },
     "descriptions": {
       "con": "Receta clásica con toda la cremosidad y el sabor auténtico del yogurt griego tradicional",
       "sin": "La misma cremosidad, sin compromisos. Perfecto para quienes buscan una opción digestiva sin perder el sabor"
+      "gaseosa": "Los mejores sabores para refrescarte"
     },
     "logos": {
       "con": "Logo%20lac.png",
       "sin": "logo%20sin%20lac.png"
+       "gaseosa": logo%20gaseosa%20lac.png
     },
     "folders": {
       "con": "Con lactosa",
-      "sin": "Sin lactosa"
+      "sin": "Sin lactosa",
+      "gaseosa": "Gaseosa"
     }
   }
 }
